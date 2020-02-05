@@ -5,7 +5,7 @@ module GRPlot {
   extern proc gr_initgr();
   extern proc gr_opengks();
   extern proc gr_closegks();
-  extern proc gr_inqdspsize(mWidth : c_ptr(real), mHeight : c_ptr(real), width : c_ptr(c_int), c_ptr(c_int));
+  extern proc gr_inqdspsize(mWidth : c_ptr(real), mHeight : c_ptr(real), width : c_ptr(c_int), height : c_ptr(c_int));
   extern proc gr_openws(workstation_id : c_int, connection : c_string, workstation_type : c_int);
   extern proc gr_closews(workstation_id : c_int);
   extern proc gr_activatews(workstation_id : c_int);
