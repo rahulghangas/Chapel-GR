@@ -17,7 +17,20 @@ module GRPlot {
   extern proc gr_polymarker(n : c_int, x : [] real, y : [] real);
   extern proc gr_text(x : real, y : real, text : c_string);
   extern proc gr_inqtext(x : real, y : real, str : c_string, tbx : c_ptr(real), tby : c_ptr(real));
-
+  extern proc gr_fillarea(n : int, x : c_ptr(real), y : c_ptr(real));
+  extern proc gr_cellarray(xmin : real, xmas : real, ymin : real, ymax : real,
+                           dimx : c_int, dimy : c_int, scol : c_int, srow : c_int, 
+                           ncol : c_int, nrow : c_int, color : c_ptr(c_int));
+  extern proc gr_nonuniformcellarray(x : c_ptr(real), y : c_ptr(real), dimx : c_int, 
+                                     dimy : c_int, scol : c_int, ncol : c_int, 
+                                     nrow : c_int, color : c_ptr(c_int));
+  extern proc gr_polarcellarray(x_org : real, y_org : real, phimin : real, 
+                                phimax : real, rmin : real, rmax : real, dimphi : c_int,
+                                dimr : c_int, scol : c_int, srow : c_int, ncol : c_int,
+                                nrow : c_int, color : c_ptr(c_int));
+  extern proc gr_gdp(n : c_int, x : c_ptr(real), y : c_ptr(real), primid : c_int, 
+                     ldr : c_int, datrec : c_ptr(c_int));
+                     
   extern proc gr_axes(x_tick : real, y_tick : real, x_org : real, y_org : real, major_x : int, major_y : int, tick_size : real);
   extern proc gr_tick (start : real, end : real): real;
 
