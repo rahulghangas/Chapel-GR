@@ -205,6 +205,21 @@ module GRPlot {
   extern proc gr_load_from_str(str : c_string) : c_int;
   extern proc gr_dumpmeta_json_str() : c_string;
   extern proc gr_version() : c_string;
+  extern proc gr_shade(n : c_int, x : c_ptr(real), y : c_ptr(real), a : c_int, b : c_int, ptr : c_ptr(real), c : c_int, d : c_int, ptr2 : c_ptr(c_int));
+  extern proc gr_shadepoints(n : c_int, x : c_ptr(real), y : c_ptr(real), xform : c_int, w : c_int, h : c_int);
+  extern proc gr_shadelines(n : c_int, x : c_ptr(real), y : c_ptr(real), xform : c_int, w : c_int, h : c_int);
+  extern proc gr_panzoom(x : real, y : real, xzoom : real, yzoom : real, xmin : c_ptr(real), xmax : c_ptr(real), ymin : c_ptr(real), ymax : c_ptr(real));
+  
+  // TODO : Define findboundary
+  // extern proc gr_findboundary
+
+  extern proc gr_setresamplemethod(method : c_uint);
+  extern proc gr_inqresamplemethod(flag : c_ptr(c_uint));
+  extern proc gr_path(n : c_int, x : c_ptr(real), y : c_ptr(real), codes : c_string);
+  extern proc gr_setborderwidth(width : real);
+  extern proc gr_inqborderwidth(width : c_ptr(real));
+  extern proc gr_setbordercolorind(color : c_int);
+  extern proc gr_inqbordercolorind(color : c_ptr(c_int));
 
   proc polyline(x : [?D1] ?t1, y : [?D2] ?t2){
     gr_polyline((x.size : uint(8)) : int(32), x, y);
