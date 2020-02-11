@@ -59,7 +59,7 @@ module GRPlot {
   extern proc gr_setfillstyle(ind : c_int);
   extern proc gr_setfillcolorind(color : c_int);
   extern proc gr_inqfillcolorind(color : c_ptr(c_int));
-  extern proc gr_setcolorrep(colorIndex : c_int, red : real, green : real, blue : real);
+  extern proc gr_setcolorrep(color_index : c_int, red : real, green : real, blue : real);
   extern proc gr_setwindow(xmin : real, xmax : real, ymin : real, ymax : real);
   extern proc gr_inqwindow(xmin : c_ptr(real), xmax : c_ptr(real), 
                            ymin : c_ptr(real), ymax : c_ptr(real));
@@ -99,12 +99,115 @@ module GRPlot {
                             e1 : c_ptr(real), e2 : c_ptr(real));
   extern proc gr_polyline3d(n : c_int, px : c_ptr(real), py : c_ptr(real), pz : c_ptr(real));
   extern proc gr_polymarker3d(n : c_int, px : c_ptr(real), py : c_ptr(real), pz : c_ptr(real));
-  // extern proc gr_axes3d();
+  extern proc gr_axes3d(x_tick : real, y_tick : real, z_tick : real, 
+                        x_org : real, y_org : real, z_org : real, 
+                        major_x : c_int, major_y : c_int, major_z : c_int, tick_size : real);
+  extern proc titles3d(x_title : c_string, y_title : c_string, z_title : c_string);
+  extern proc gr_surface(nx : c_int, ny : c_int, 
+                         px : c_ptr(real), py : c_ptr(real), pz : c_ptr(real), 
+                         option : c_int);
+  extern proc gr_contour(nx : c_int, ny : c_int , nh : c_int, 
+                         px : c_ptr(real), py : c_ptr(real), h : c_ptr(real), pz : c_ptr(real), 
+                         mahor_h : c_int);
+  extern proc  gr_contourf(nx : c_int, ny : c_int, nh : c_int, 
+                 px : c_ptr(real), py : c_ptr(real), h : c_ptr(real), pz : c_ptr(real), 
+                 major_h : c_int);
+  extern proc gr_tricontour(npoints : c_int, x : c_ptr(real), y :c_ptr(real), z : c_ptr(real), nlevels : c_int, evels : c_ptr(real));
+  extern proc gr_hexbin(n : c_int, x : c_ptr(real), y : c_ptr(real), nbins : c_int) : c_int;
+  extern proc gr_setcolormap(map_index : c_int);
+  extern proc gr_inqcolormap(map_index : c_ptr(c_int));
+  extern proc gr_setcolormapfromrgb(n : c_int, r : c_ptr(real), g : c_ptr(real), b : c_ptr(real), x : c_ptr(real));
+  extern proc gr_colorbar();
+  extern proc gr_inqcolor(color : c_int, rgb : c_ptr(c_int));
+  extern proc gr_inqcolorfromrgb(r : real, g : real, b : real) : c_int;
+  extern proc gr_hsvtorgb(h : real, s :real, v :real, r :c_ptr(real), g : c_ptr(real), b : c_ptr(real));
+  extern proc gr_tick(amin : real, amax : real) : real;
+  extern proc gr_validaterange(amin : real, amax : real) : c_int;
+  extern proc gr_adjustlimits(amin : c_ptr(real), amax : c_ptr(real));
+  extern proc gr_adjustrange(amin : c_ptr(real), amax : c_ptr(real));
+  extern proc gr_beginprint(pathname : c_string);
+  extern proc gr_beginprintext(pathname : c_string, mode : c_string, format : c_string, orientation : c_string);
+  extern proc gr_endprint();
+  extern proc gr_ndctowc(x : c_ptr(real), y : c_ptr(real));
+  extern proc gr_wctondc(x : c_ptr(real), y : c_ptr(real));
+  extern proc gr_wc3towcx(x : c_ptr(real), y : c_ptr(real), z : c_ptr(real));
+  extern proc gr_drawrect(xmin : real, xmax : real, ymin : real, ymax : real);
+  extern proc gr_fillrect(xmin : real, xmax : real, ymin : real, ymax : real);
+  extern proc gr_drawarc(xmin : real, xmax : real, ymin : real, ymax : real, a1: real, a2 : real);
+  extern proc gr_fillarc(xmin : real, xmax : real, ymin : real, ymax : real, a1: real, a2 : real);
+  extern proc gr_drawpath(n : c_int, points : c_ptr(real), codes : c_ptr(c_uchar), fill : c_int);
+  extern proc gr_setarrowstyle(style : c_int);
+  extern proc gr_setarrowsize(size : real);
+  extern proc gr_drawarrow(x1 : real, x2 : real, y1 : real, y2 : real);
+  extern proc gr_readimage(path : c_string, width : c_ptr(c_int), height : c_ptr(c_int), data : c_ptr(c_ptr(c_int))) : c_int;
+  extern proc gr_drawimage(xmin : real, xmax : real, ymin : real, ymax : real, width : c_int, height : c_int, data : c_ptr(c_int), model : c_int);
+  extern proc gr_importgraphics(path : c_string) : c_int;
+  extern proc gr_setshadow(offsetx : real, offsety : real, blur : real);
+  extern proc gr_settransparency(alpha : real);
+  extern proc gr_setcoordxform(mat : c_ptr(real));
+  extern proc gr_begingraphics(path : c_string);
+  extern proc gr_endgraphics();
+  extern proc gr_getgraphics() : c_string;
+  extern proc gr_getgraphics(str : c_string) : c_int;
+  extern proc gr_mathtex(x : real, y : real, str : c_string);
+  extern proc gr_inqmathtex(x : real, y :real, str : c_string, tbx : c_ptr(real), tby : c_ptr(real));
+  extern proc gr_beginselection(x : c_int, y: c_int);
+  extern proc gr_endselection();
+  extern proc gr_moveselection(x : real, y : real);
+  extern proc gr_resizeselection(a : c_int, x : real, y: real);
+  extern proc gr_inqbbox(xmin : c_ptr(real), xmax : c_ptr(real), ymin : c_ptr(real), ymax : c_ptr(real));
+  extern proc gr_precision() : real;
+  extern proc gr_setregenflags(flag : c_int);
+  extern proc gr_inqregenflags() : c_int;
+  extern proc gr_savestate();
+  extern proc gr_restorestate();
+  extern proc gr_selectcontext(context : c_int);
+  extern proc gr_destroycontext(context : c_int);
+  extern proc gr_uselinespec(linespec : c_string) : c_int;
+  extern proc gr_delaunay(n : c_int, const x : real, const y : real, ntri : c_ptr(c_int), traingles : c_ptr(c_ptr(c_int)));
+  extern proc gr_reducepoints(n : c_int, const x : real, const y : real, points : c_int, x_array : c_ptr(real), y_array : c_ptr(real));
+  extern proc gr_trisurface(n : c_int, px : c_ptr(real), py : c_ptr(real), pz : c_ptr(real));
+  extern proc gr_gradient(nx : c_int, ny : c_int, x : c_ptr(real), y : c_ptr(real), z : c_ptr(real), u : c_ptr(real), v : c_ptr(real));
+  extern proc gr_quiver(nx : c_int, ny : c_int, x : c_ptr(real), y : c_ptr(real), u : c_ptr(real), v : c_ptr(real), color : c_int);
+  extern proc gr_interp2(nx : c_int, ny : c_int, 
+                         const x : c_ptr(real), const y : c_ptr(real), const z : c_ptr(real), 
+                         nxq : c_int, nyq : c_int, 
+                         const xq : c_ptr(real), const yq : c_ptr(real), const zq : c_ptr(real), 
+                         method : c_int, extrapval : real);
+  extern proc gr_newmeta() : c_void_ptr;
+  extern proc gr_deletemeta(arg : c_void_ptr);
+  extern proc gr_finalizemeta();
 
-  extern proc gr_tick (start : real, end : real): real;
+  // Finish gr_meta...
+  extern proc gr_meta_args_push(arg : c_void_ptr, str : c_string ...?n);
+  // gr_meta... block end
+
+  extern proc gr_openmeta(target : c_int, device : c_string, port : c_uint, send_c : c_void_ptr, recv_c : c_void_ptr) : c_void_ptr;
+  extern proc gr_recvmeta(handle : c_void_ptr, arg : c_void_ptr) : c_void_ptr;
+  extern proc gr_sendmeta(const handle : c_void_ptr, str : c_string) : c_int;
+  extern proc gr_sendmeta_buf(const handle : c_void_ptr, key : c_string, const data : c_void_ptr, len : c_int) : c_int;
+  extern proc gr_sendmeta_ref(const handle : c_void_ptr, key : c_string, fmt : c_char, const data : c_void_ptr, len : c_int) : c_int;
+  extern proc gr_sendmeta_args(handle : c_void_ptr, arg : c_void_ptr) : c_int;
+  extern proc gr_closemeta(const handle : c_void_ptr);
+  extern proc gr_clearmeta() : c_int;
+  extern proc gr_inputmeta(const arg : c_void_ptr) : c_int;
+  extern proc gr_mergemeta(const arg : c_void_ptr) : c_int;
+  extern proc gr_mergemeta_named(const args : c_void_ptr, identificator : c_string) : c_int;
+  extern proc gr_plotmeta(const args : c_void_ptr) : c_int;
+  extern proc gr_readmeta(const args : c_void_ptr, str : c_string) : c_int;
+  extern proc gr_switchmeta(id : c_uint);
+  extern proc gr_registermeta(meta_event_type : c_void_ptr, meta_event_callback : c_void_ptr) : c_int;
+  extern proc gr_unregistermeta(meta_event_type : c_void_ptr) : c_int;
+  extern proc gr_meta_max_plotid() : c_uint;
+
+  // TODO : dumpmeta and dumpmeta_json
+
+  extern proc gr_load_from_str(str : c_string) : c_int;
+  extern proc gr_dumpmeta_json_str() : c_string;
+  extern proc gr_version() : c_string;
 
   proc polyline(x : [?D1] ?t1, y : [?D2] ?t2){
-    gr_polyline(x.size : int(32), x, y);
+    gr_polyline((x.size : uint(8)) : int(32), x, y);
     gr_axes(gr_tick(0, 1), gr_tick(0, 1), 0, 0, 1, 1, -0.01);
   }
 
