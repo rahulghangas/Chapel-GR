@@ -2,14 +2,36 @@
 module GRPlot {
   require "gr.h";
 
-  extern proc gr_initgr();
-  extern proc gr_opengks();
-  extern proc gr_closegks();
+  extern "gr_initgr" proc initgr();
+  extern "gr_opengks" proc opengks();
+  extern "gr_closegks" proc closegks();
+
   extern proc gr_inqdspsize(ref mWidth : real, ref mHeight : real, ref width : c_int, 
                             ref height : c_int);
+  proc inqdspsize(){
+    var mwidth : real;
+    var mheight : real;
+    var width : c_int;
+    var height : c_int;
+    gr_inqdspsize(mwidth, mheight, width, height);
+    return (mwidth, mheight, width, height);
+  }
+
   extern proc gr_openws(workstation_id : c_int, connection : c_string, workstation_type : c_int);
+  proc openws(workstation_id : int, connection : string, workstation_type : int){
+    gr_openws(workstation_id : c_int, connection.c_str(), workstation_id : c_int);
+  }
+
   extern proc gr_closews(workstation_id : c_int);
+  proc closews(workstation_id : int){
+    gr_closews(workstation_id : c_int);
+  }
+
   extern proc gr_activatews(workstation_id : c_int);
+  proc activatews(workstation_id : int){
+    gr_activatews(workstation_id : c_int);
+  }
+
   extern proc gr_deactivatews(workstation_id : c_int);
   extern proc gr_configurews();
   extern proc gr_clearws();
@@ -221,15 +243,6 @@ module GRPlot {
   extern proc gr_setbordercolorind(color : c_int);
   extern proc gr_inqbordercolorind(color : c_ptr(c_int));
 
-  proc inqdspsize(){
-    var mwidth : real;
-    var mheight : real;
-    var width : c_int;
-    var height : c_int;
-    gr_inqdspsize(mwidth, mheight, width, height);
-    return (mwidth, mheight, width, height);
-  }
-
   proc polyline(x : [?D1] ?t1, y : [?D2] ?t2){
     gr_polyline((x.size : uint(8)) : int(32), x, y);
     gr_axes(gr_tick(0, 1), gr_tick(0, 1), 0, 0, 1, 1, -0.01);
@@ -241,7 +254,6 @@ use GRPlot;
 var a : [1..10] real = [0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0];
 var b : [1..10] real = [1.0,0.9,0.8,0.7,0.6,0.5,0.4,0.3,0.2,0.1];
 polyline(a, b);
-writeln(inqdspsize());
 while true{
   nothing;
 }
