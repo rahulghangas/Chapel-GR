@@ -33,10 +33,20 @@ module GRPlot {
   }
 
   extern proc gr_deactivatews(workstation_id : c_int);
-  extern proc gr_configurews();
-  extern proc gr_clearws();
-  extern proc gr_updatews();
+  proc deactivatews(workstation_id : int){
+    gr_deactivatews(workstation_id : c_int);
+  }
+
+  extern "gr_configurews" proc configurews();
+  extern "gr_clearws" proc clearws();
+  extern "gr_updatews" proc updatews();
+
   extern proc gr_polyline(n : c_int, x : [] real, y : [] real);
+  proc polyline(x : [?D1] ?t1, y : [?D2] ?t2){
+    gr_polyline((x.size : uint(8)) : int(32), x, y);
+    gr_axes(gr_tick(0, 1), gr_tick(0, 1), 0, 0, 1, 1, -0.01);
+  }
+  
   extern proc gr_polymarker(n : c_int, x : [] real, y : [] real);
   extern proc gr_text(x : real, y : real, text : c_string);
   extern proc gr_inqtext(x : real, y : real, str : c_string, tbx : c_ptr(real), tby : c_ptr(real));
@@ -243,10 +253,6 @@ module GRPlot {
   extern proc gr_setbordercolorind(color : c_int);
   extern proc gr_inqbordercolorind(color : c_ptr(c_int));
 
-  proc polyline(x : [?D1] ?t1, y : [?D2] ?t2){
-    gr_polyline((x.size : uint(8)) : int(32), x, y);
-    gr_axes(gr_tick(0, 1), gr_tick(0, 1), 0, 0, 1, 1, -0.01);
-  }
 
 }
 
