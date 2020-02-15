@@ -43,14 +43,29 @@ module GRPlot {
 
   extern proc gr_polyline(n : c_int, x : [] real, y : [] real);
   proc polyline(x : [?D1] ?t1, y : [?D2] ?t2){
-    gr_polyline((x.size : uint(8)) : int(32), x, y);
-    gr_axes(gr_tick(0, 1), gr_tick(0, 1), 0, 0, 1, 1, -0.01);
+    gr_polyline(x.size : c_int, x, y);
+    // gr_axes(gr_tick(0, 1), gr_tick(0, 1), 0, 0, 1, 1, -0.01);
   }
   
   extern proc gr_polymarker(n : c_int, x : [] real, y : [] real);
+  proc polymarker(x : [?D1] ?t1, y : [?D2] ?t2){
+    gr_polymarker(x.size : c_int, x, y);
+  }
+
   extern proc gr_text(x : real, y : real, text : c_string);
+  proc text(x : real, y : real, text : string){
+    gr_text(x, y, text.c_str());
+  }
+
   extern proc gr_inqtext(x : real, y : real, str : c_string, tbx : c_ptr(real), tby : c_ptr(real));
-  extern proc gr_fillarea(n : int, x : c_ptr(real), y : c_ptr(real));
+  // proc inqtext(x : real, y : real, text : string){
+  // }
+
+  extern proc gr_fillarea(n : int, x : [] real, y : [] real);
+  proc fillarea(x : [] real, y : [] real){
+    gr_fillarea(x.size : c_int, x, y);
+  }
+
   extern proc gr_cellarray(xmin : real, xmas : real, ymin : real, ymax : real,
                            dimx : c_int, dimy : c_int, scol : c_int, srow : c_int, 
                            ncol : c_int, nrow : c_int, color : c_ptr(c_int));
