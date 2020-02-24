@@ -31,7 +31,7 @@ module GRPlot {
 
   extern proc gr_polyline(n : int, x : [] real, y : [] real);
   proc polyline(x : [?D1] ?t1, y : [?D2] ?t2){
-    gr_polyline(x.size : int, x, y);
+    gr_polyline(x.size, x, y);
     // gr_axes(gr_tick(0, 1), gr_tick(0, 1), 0, 0, 1, 1, -0.01);
   }
   
@@ -51,7 +51,7 @@ module GRPlot {
 
   extern proc gr_fillarea(n : int, x : [] real, y : [] real);
   proc fillarea(x : [] real, y : [] real){
-    gr_fillarea(x.size : int, x, y);
+    gr_fillarea(x.size, x, y);
   }
 
   extern proc gr_cellarray(xmin : real, xmas : real, ymin : real, ymax : real,
