@@ -19,24 +19,12 @@ module GRPlot {
 
   extern proc gr_openws(workstation_id : int, connection : c_string, workstation_type : int);
   proc openws(workstation_id : int, connection : string, workstation_type : int){
-    gr_openws(workstation_id : int, connection.c_str(), workstation_id : int);
+    gr_openws(workstation_id, connection.c_str(), workstation_id);
   }
 
-  extern proc gr_closews(workstation_id : int);
-  proc closews(workstation_id : int){
-    gr_closews(workstation_id : int);
-  }
-
-  extern proc gr_activatews(workstation_id : int);
-  proc activatews(workstation_id : int){
-    gr_activatews(workstation_id : int);
-  }
-
-  extern proc gr_deactivatews(workstation_id : int);
-  proc deactivatews(workstation_id : int){
-    gr_deactivatews(workstation_id : int);
-  }
-
+  extern "gr_closews" proc closews(workstation_id : int);
+  extern "gr_activatews" proc activatews(workstation_id : int);
+  extern "gr_deactivatews" proc deactivatews(workstation_id : int);
   extern "gr_configurews" proc configurews();
   extern "gr_clearws" proc clearws();
   extern "gr_updatews" proc updatews();
@@ -49,7 +37,7 @@ module GRPlot {
   
   extern proc gr_polymarker(n : int, x : [] real, y : [] real);
   proc polymarker(x : [?D1] ?t1, y : [?D2] ?t2){
-    gr_polymarker(x.size : int, x, y);
+    gr_polymarker(x.size, x, y);
   }
 
   extern proc gr_text(x : real, y : real, text : c_string);
