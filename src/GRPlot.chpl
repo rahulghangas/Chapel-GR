@@ -46,8 +46,12 @@ module GRPlot {
   }
 
   extern proc gr_inqtext(x : real, y : real, str : c_string, tbx : c_ptr(real), tby : c_ptr(real));
-  // proc inqtext(x : real, y : real, text : string){
-  // }
+  proc inqtext(x : real, y : real, text : string){
+    var tbx : real;
+    var tby : real;
+    gr_inqtext(x, y, text.c_str(), c_ptrTo(tbx), c_ptrTo(tby));
+    return (tbx, tby);
+  }
 
   extern proc gr_fillarea(n : int, x : [] real, y : [] real);
   proc fillarea(x : [] real, y : [] real){
@@ -263,6 +267,7 @@ use GRPlot;
 var a : [1..10] real = [0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0];
 var b : [1..10] real = [1.0,0.9,0.8,0.7,0.6,0.5,0.4,0.3,0.2,0.1];
 polyline(a, b);
+inqtext(1,2, "Blah");
 while true{
   nothing;
 }
