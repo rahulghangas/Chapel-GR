@@ -1,5 +1,6 @@
 /* Documentation for GR */
 module GRPlot {
+  use SysCTypes;
   require "gr.h";
 
   extern "gr_initgr" proc initgr();
@@ -58,9 +59,13 @@ module GRPlot {
     gr_fillarea(x.size, x, y);
   }
 
-  extern proc gr_cellarray(xmin : real, xmas : real, ymin : real, ymax : real,
+  extern proc gr_cellarray(xmin : real, xmax : real, ymin : real, ymax : real,
                            dimx : int, dimy : int, scol : int, srow : int, 
                            ncol : int, nrow : int, color : c_ptr(int));
+  proc cellarray(xmin : real, xmax : real, ymin : real, ymax : real, dimx : real, dimy : real, color : [] int){
+    gr_cellarray(xmin, xmax, ymin, ymax, dimx, dimy, 1, 1, dimx, dimy, color);
+  }
+
   extern proc gr_nonuniformcellarray(x : c_ptr(real), y : c_ptr(real), dimx : int, 
                                      dimy : int, scol : int, ncol : int, 
                                      nrow : int, color : c_ptr(int));
