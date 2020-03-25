@@ -31,23 +31,23 @@ module GRPlot {
   extern "gr_updatews" proc updatews();
 
   extern proc gr_polyline(n : int, x : [] real, y : [] real);
-  proc polyline(x : [?D1] ?t1, y : [?D2] ?t2){
+  proc polyline(x : [?D1] ?t1, y : [?D2] ?t2) {
     gr_polyline(x.size, x, y);
-    // gr_axes(gr_tick(0, 1), gr_tick(0, 1), 0, 0, 1, 1, -0.01);
+    gr_axes(gr_tick(0, 1), gr_tick(0, 1), 0, 0, 1, 1, -0.01);
   }
   
   extern proc gr_polymarker(n : int, x : [] real, y : [] real);
-  proc polymarker(x : [?D1] ?t1, y : [?D2] ?t2){
+  proc polymarker(x : [?D1] ?t1, y : [?D2] ?t2) {
     gr_polymarker(x.size, x, y);
   }
 
   extern proc gr_text(x : real, y : real, text : c_string);
-  proc text(x : real, y : real, text : string){
+  proc text(x : real, y : real, text : string) {
     gr_text(x, y, text.c_str());
   }
 
   extern proc gr_inqtext(x : real, y : real, str : c_string, tbx : c_ptr(real), tby : c_ptr(real));
-  proc inqtext(x : real, y : real, text : string){
+  proc inqtext(x : real, y : real, text : string) {
     var tbx : real;
     var tby : real;
     gr_inqtext(x, y, text.c_str(), c_ptrTo(tbx), c_ptrTo(tby));
@@ -55,14 +55,14 @@ module GRPlot {
   }
 
   extern proc gr_fillarea(n : int, x : [] real, y : [] real);
-  proc fillarea(x : [] real, y : [] real){
+  proc fillarea(x : [] real, y : [] real) {
     gr_fillarea(x.size, x, y);
   }
 
   extern proc gr_cellarray(xmin : real, xmax : real, ymin : real, ymax : real,
                            dimx : int, dimy : int, scol : int, srow : int, 
                            ncol : int, nrow : int, color : [] int);
-  proc cellarray(xmin : real, xmax : real, ymin : real, ymax : real, dimx : real, dimy : real, color : [] ?t){
+  proc cellarray(xmin : real, xmax : real, ymin : real, ymax : real, dimx : real, dimy : real, color : [] ?t) {
     var colorCast = [elt in color] elt : int;
     gr_cellarray(xmin, xmax, ymin, ymax, dimx, dimy, 1, 1, dimx, dimy, colorCast);
   }
@@ -70,7 +70,7 @@ module GRPlot {
   extern proc gr_nonuniformcellarray(x : [] real, y : [] real, dimx : int, 
                                      dimy : int, scol : int, ncol : int, 
                                      nrow : int, color : [] int);
-  proc nonuniformcellarray(x : [] real, y : real, dimx : int, dimy : int, color : [] int){
+  proc nonuniformcellarray(x : [] real, y : real, dimx : int, dimy : int, color : [] int) {
     gr_nonuniformcellarray(x, y, dimx, dimy, 1, 1, dimx, dimy, color); 
   }
 
@@ -78,7 +78,7 @@ module GRPlot {
                                 phimax : real, rmin : real, rmax : real, dimphi : int,
                                 dimr : int, scol : int, srow : int, ncol : int,
                                 nrow : int, color : c_ptr(int));
-  proc polarcellarray(xorg : real, yorg : real, phimin : real, phimax : real, rmin : real, rmax : real, dimphi : int, dimr : int, color : [] int){
+  proc polarcellarray(xorg : real, yorg : real, phimin : real, phimax : real, rmin : real, rmax : real, dimphi : int, dimr : int, color : [] int) {
     gr_polarcellarray(xorg, yorg, phimin, phimax, rmin, rmax, dimphi, dimr, 1, 1, dimphi, dimr, color);
   }
 
@@ -89,58 +89,98 @@ module GRPlot {
   }
 
   extern proc gr_spline(n : int, px : c_ptr(real), py : c_ptr(real), m : int, method : int);
-  proc spline(x : [] real, y : real, m : int, method : int){
+  proc spline(x : [] real, y : real, m : int, method : int) {
     gr_spline(x.size, x, y, m, method);
   }
 
   extern proc gr_gridit(nd : int, xd : c_ptr(real), yd : c_ptr(real), zd : c_ptr(real),
                         nx : int, ny : int, x : c_ptr(real), y : c_ptr(real), z : c_ptr(real));
-  proc gridit(xd : [] real, yd : [] real, zd : [] real, nx : int, ny : int){
+  proc gridit(xd : [] real, yd : [] real, zd : [] real, nx : int, ny : int) {
     var x : [1..nx] real = {1..nx};
     var y : [1..ny] real = {1..ny};
     var z : [1..nx*ny] real = {1..nx*ny};
     gr_gridit(xd.size, xd, yd, zd, nx, ny, x, y, z);
   }
 
-  extern proc gr_setlinetype(lineType : int);
-  extern proc gr_inqlinetype(ptr : c_ptr(real));
-  extern proc gr_setlinewidth(width : real);
-  extern proc gr_inqlinewidth(ptr : c_ptr(real));
-  extern proc gr_setlinecolorind(color : int);
-  extern proc gr_inqlinecolorind(ptr : c_ptr(int));
-  extern proc gr_setmarkertype(marker_type : int);
-  extern proc gr_inqmarkertype(ptr : c_ptr(int));
-  extern proc gr_setmarkersize(size : real);
+  extern "gr_setlinetype" proc setlinetype(style : int);
+
+  extern proc gr_inqlinetype(ref ptr : real);
+  proc inqlinetype() {
+    var style : real;
+    gr_inqlinetype(style);
+    return style;
+  }
+
+  extern "gr_setlinewidth" proc gr_setlinewidth(width : real);
+
+  extern proc gr_inqlinewidth(ref ptr : real);
+  proc inqlinewidth() {
+    var width : real;
+    gr_inqlinewidth(width);
+    return width;
+  }
+
+  extern "gr_setlinecolorind" proc setlinecolorind(color : int);
+
+  extern proc gr_inqlinecolorind(ref ptr : int);
+  proc inqlinecolorind() {
+    var color : int;
+    gr_inqlinecolorind(color);
+    return color;
+  }
+
+  extern "gr_setmarkertype" proc setmarkertype(markerType : int);
+
+  extern proc gr_inqmarkertype(ref ptr : int);
+  proc inqmarkertype() {
+    var markerType : int;
+    gr_inqmarkertype(markerType);
+    return markerType;
+  }
+
+  extern "gr_setmarkersize" proc setmarkersize(size : real);
   extern proc gr_inqmarkersize(size : c_ptr(real));
-  extern proc gr_setmarkercolorind(color : int);
+  // TODO
+
+  extern "gr_setmarkercolorind" proc setmarkercolorind(color : int);
   extern proc gr_inqmarkercolorind(ptr : c_ptr(int));
-  extern proc gr_settextfontprec(font : int, precision : int);
-  extern proc gr_setcharexpan(factor : real);
-  extern proc gr_setcharspace(space : real);
-  extern proc gr_settextcolorind(color : int);
-  extern proc gr_setcharheight(height : real);
-  extern proc gr_setcharup(ux : real, uy : real);
-  extern proc gr_settextpath(path : int);
-  extern proc gr_settextalign(horizontal : int, vertical : int);
-  extern proc gr_setfillintstyle(style : int);
+
+  extern "gr_settextfontprec" proc settextfontprec(font : int, precision : int);
+  extern "gr_setcharexpan" proc setcharexpan(factor : real);
+  extern "gr_setcharspace" proc setcharspace(space : real);
+  extern "gr_settextcolorind" proc settextcolorind(color : int);
+  extern "gr_setcharheight" proc setcharheight(height : real);
+  extern "gr_setcharup" proc setcharup(ux : real, uy : real);
+  extern "gr_settextpath" proc settextpath(path : int);
+  extern "gr_settextalign" proc settextalign(horizontal : int, vertical : int);
+  extern "gr_setfillintstyle" proc setfillintstyle(style : int);
   extern proc gr_inqfillintstyle(style : c_ptr(int));
-  extern proc gr_setfillstyle(ind : int);
-  extern proc gr_setfillcolorind(color : int);
+  // TODO
+
+  extern "gr_setfillstyle" proc setfillstyle(ind : int);
+  extern "gr_setfillcolorind" proc setfillcolorind(color : int);
   extern proc gr_inqfillcolorind(color : c_ptr(int));
-  extern proc gr_setcolorrep(color_index : int, red : real, green : real, blue : real);
-  extern proc gr_setwindow(xmin : real, xmax : real, ymin : real, ymax : real);
+  // TODO
+
+  extern "gr_setcolorrep" proc setcolorrep(color_index : int, red : real, green : real, blue : real);
+  extern "gr_setwindow" proc setwindow(xmin : real, xmax : real, ymin : real, ymax : real);
   extern proc gr_inqwindow(xmin : c_ptr(real), xmax : c_ptr(real), 
                            ymin : c_ptr(real), ymax : c_ptr(real));
-  extern proc gr_setviewport(xmin : real, xmax : real, ymin : real, ymax : real);
+  // TODO
+
+  extern "gr_setviewport" proc gr_setviewport(xmin : real, xmax : real, ymin : real, ymax : real);
+
   extern proc gr_inqviewport(xmin : c_ptr(real), xmax : c_ptr(real), 
                              ymin : c_ptr(real), ymax : c_ptr(real));
-  extern proc gr_selntran(transform : int);
-  extern proc gr_setclip(indicator : int);
-  extern proc gr_setwswindow(xmin : real, xmax : real, ymin : real, ymax : real);
-  extern proc gr_setwsviewport(xmin : real, xmax : real, ymin :real, ymax : real);
-  extern proc gr_createseg(n : int);
-  extern proc gr_copysegws(n : int);
-  extern proc gr_redrawsegws();
+  // TODO
+
+  extern "gr_selntran" proc selntran(transform : int);
+  extern "gr_setclip" proc setclip(indicator : int);
+  extern "gr_setwswindow" proc setwswindow(xmin : real, xmax : real, ymin : real, ymax : real);
+  extern "gr_setwsviewport" proc setwsviewport(xmin : real, xmax : real, ymin :real, ymax : real);
+  extern "gr_createseg" proc createseg(n : int);
+  extern "gr_copysegws" proc copysegws(n : int);
+  extern "gr_redrawsegws" proc redrawsegws();
   extern proc gr_setsegtran(segment : int, fx : real, fy : real, transx : real, transy : real, 
                             phi : real, scalex : real, scaley : real);
   extern proc gr_closeseg();
@@ -299,7 +339,7 @@ use GRPlot;
 var a : [1..10] real = [0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0];
 var b : [1..10] real = [1.0,0.9,0.8,0.7,0.6,0.5,0.4,0.3,0.2,0.1];
 polyline(a, b);
-inqtext(1,2, "Blah");
+writeln(inqlinewidth());
 while true{
   nothing;
 }
