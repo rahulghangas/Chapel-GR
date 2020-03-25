@@ -31,13 +31,13 @@ module GRPlot {
   extern "gr_updatews" proc updatews();
 
   extern proc gr_polyline(n : int, x : [] real, y : [] real);
-  proc polyline(x : [?D1] ?t1, y : [?D2] ?t2) {
+  proc polyline(x : [] ?t1, y : [] ?t2) {
     gr_polyline(x.size, x, y);
     gr_axes(gr_tick(0, 1), gr_tick(0, 1), 0, 0, 1, 1, -0.01);
   }
   
   extern proc gr_polymarker(n : int, x : [] real, y : [] real);
-  proc polymarker(x : [?D1] ?t1, y : [?D2] ?t2) {
+  proc polymarker(x : [] ?t1, y : [] ?t2) {
     gr_polymarker(x.size, x, y);
   }
 
@@ -217,19 +217,31 @@ module GRPlot {
     return (tbx, tby);
   }
 
-  extern proc gr_axes(x_tick : real, y_tick : real, x_org : real, y_org : real, 
+  extern "gr_axes" proc axes(x_tick : real, y_tick : real, x_org : real, y_org : real, 
                       major_x : int, major_y : int, tick_size : real);
   extern proc gr_axeslbl(x_tick : real, y_tick : real, x_org : real, y_org : real, major_x : int, 
                         major_y : int, tick_size : real, fpx : c_fn_ptr, fpy : c_fn_ptr);
-  extern proc gr_grid(x_tick : real, y_tick : real, x_org : real, y_org : real, major_x : int, 
-                      major_y : c_fn_ptr);
-  extern proc gr_grid3d(x_tick : real, y_tick : real, z_tick : real, 
+  // TODO
+
+  extern "gr_grid" proc grid(x_tick : real, y_tick : real, x_org : real, y_org : real, major_x : int, 
+                      major_y : int);
+
+  extern "gr_grid3d" proc grid3d(x_tick : real, y_tick : real, z_tick : real, 
                         x_org : real, y_org : real, z_org : real, 
                         major_x : int, major_y : int, major_z : int);
+
   extern proc gr_verrorbars(n : int, px : c_ptr(real), py : c_ptr(real), 
                             e1 : c_ptr(real), e2 : c_ptr(real));
+  proc verrorbars(px : [] ?t1, py : [] ?t2, e1 : [] ?t3, e2 : [] ?t4) {
+    gr_verrorbars(px.size, px, py, e1, e2);
+  }
+
   extern proc gr_herrorbars(n : int, px : c_ptr(real), py : c_ptr(real), 
                             e1 : c_ptr(real), e2 : c_ptr(real));
+  proc herrorbars(px : [] ?t1, py : [] ?t2, e1 : [] ?t3, e2 : [] ?t4) {
+    gr_herrorbars(px.size, px, py, e1, e2);
+  }
+
   extern proc gr_polyline3d(n : int, px : c_ptr(real), py : c_ptr(real), pz : c_ptr(real));
   extern proc gr_polymarker3d(n : int, px : c_ptr(real), py : c_ptr(real), pz : c_ptr(real));
   extern proc gr_axes3d(x_tick : real, y_tick : real, z_tick : real, 
