@@ -306,7 +306,6 @@ module GRPlot {
 
   extern "gr_colorbar" proc colorbar();
 
-  // TODO : check this
   extern proc gr_inqcolor(color : int, ref rgb : int);
   proc inqcolor(color : int) {
     var rgb : int;
@@ -362,20 +361,22 @@ module GRPlot {
   extern "gr_drawarrow" proc drawarrow(x1 : real, x2 : real, y1 : real, y2 : real);
   
   // TODO
-  // extern proc gr_readimage(path : c_string, ref width : int, ref height : int, data : c_ptr(c_ptr(int))) : int;
-  // proc readimage(path : string) {
-  //   var width, height : int;
-  //   var data : [] 
-  // }
+  extern proc gr_readimage(path : c_string, ref width : int, ref height : int, data : c_ptr(c_ptr(int))) : int;
 
-  extern proc gr_drawimage(xmin : real, xmax : real, ymin : real, ymax : real, width : int, height : int, data : c_ptr(int), model : int);
+  extern proc gr_drawimage(xmin : real, xmax : real, ymin : real, ymax : real, width : int, height : int, data : [] int, model : int);
+  proc drawimage(xmin : real, xmax : real, ymin : real, ymax : real, width : int, height : int, data : [] int, model : int = 0) {
+    gr_drawimage(xmin, xmax, ymin, ymax, width, height, data, model);
+  }
+
   extern proc gr_importgraphics(path : c_string) : int;
-  extern proc gr_setshadow(offsetx : real, offsety : real, blur : real);
+  proc importgraphics(path : string) return gr_importgraphics(path.c_str());
+
+  extern "gr_setshadow" proc setshadow(offsetx : real, offsety : real, blur : real);
 
   extern "gr_settransparency" proc settransparency(alpha : real);
 
   // TODO
-  extern proc gr_setcoordxform(mat : c_ptr(real));
+  extern "gr_setcoordxform" proc setcoordxform(mat : [] real) where setcoordxform.size == 6;
   
   extern proc gr_begingraphics(path : c_string);
   proc begingraphics(path : string) {
@@ -389,12 +390,26 @@ module GRPlot {
   proc getgraphics(str : string) return gr_getgraphics(str.c_str());
 
   extern proc gr_mathtex(x : real, y : real, str : c_string);
-  extern proc gr_inqmathtex(x : real, y :real, str : c_string, tbx : c_ptr(real), tby : c_ptr(real));
+  proc mathtex(x : real, y : real, str : string) {
+    gr_mathtex(x, y, str.c_str());
+  }
+
+  extern proc gr_inqmathtex(x : real, y :real, str : c_string, tbx : [] real, tby : [] real);
+  proc inqmathtex(x : real, y : real, str : string) {
+    var tbx, tby : [1..4] real;
+    gr_inqmathtex(x, y, str, c_str(), tbx, tby);
+  }
+
   extern "gr_beginselection" proc beginselection(x : int, y: int);
   extern "gr_endselection" proc endselection();
   extern "gr_moveselection" proc moveselection(x : real, y : real);
-  extern proc gr_resizeselection(a : int, x : real, y: real);
-  extern proc gr_inqbbox(xmin : c_ptr(real), xmax : c_ptr(real), ymin : c_ptr(real), ymax : c_ptr(real));
+
+  extern "gr_resizeselection" proc gr_resizeselection(a : int, x : real, y: real);
+  extern proc gr_inqbbox(ref xmin : real, ref xmax : real, ref ymin : real, ref ymax : real);
+  proc inqbox() {
+    var xmin, xmax, ymin, ymax : real;
+
+  }
   
   extern "gr_precision" proc precision() : real;
   extern "gr_setregenflags" proc setregenflags(flag : int);
