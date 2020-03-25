@@ -3,8 +3,11 @@ module GRPlot {
   use SysCTypes;
   require "gr.h";
 
+
   extern "gr_initgr" proc initgr();
+
   extern "gr_opengks" proc opengks();
+
   extern "gr_closegks" proc closegks();
 
   extern proc gr_inqdspsize(ref mWidth : real, ref mHeight : real, ref width : int, 
@@ -22,10 +25,15 @@ module GRPlot {
   }
 
   extern "gr_closews" proc closews(workstation_id : int);
+
   extern "gr_activatews" proc activatews(workstation_id : int);
+
   extern "gr_deactivatews" proc deactivatews(workstation_id : int);
+
   extern "gr_configurews" proc configurews();
+
   extern "gr_clearws" proc clearws();
+
   extern "gr_updatews" proc updatews();
 
   extern proc gr_polyline(n : int, x : [] real, y : [] real);
@@ -66,7 +74,8 @@ module GRPlot {
   extern proc gr_nonuniformcellarray(x : [] real, y : [] real, dimx : int, 
                                      dimy : int, scol : int, ncol : int, 
                                      nrow : int, color : [] int);
-  proc nonuniformcellarray(x : [] real, y : [] real, dimx : int, dimy : int, color : [] int) where x.size == dimx+1 && y.size == dimy+1 {
+  proc nonuniformcellarray(x : [] real, y : [] real, dimx : int, dimy : int, color : [] int) {
+    if !(x.size == dimx+1 && y.size == dimy+1) then halt("Incorrect dimensions");
     gr_nonuniformcellarray(x, y, dimx, dimy, 1, 1, dimx, dimy, color); 
   }
 
@@ -135,53 +144,104 @@ module GRPlot {
   }
 
   extern "gr_setmarkersize" proc setmarkersize(size : real);
-  extern proc gr_inqmarkersize(size : c_ptr(real));
-  // TODO
+
+  extern proc gr_inqmarkersize(ref size : real);
+  proc inqmarkersize() {
+    var size : int;
+    gr_inqmarkersize(size);
+    return size;
+  }
 
   extern "gr_setmarkercolorind" proc setmarkercolorind(color : int);
-  extern proc gr_inqmarkercolorind(ptr : c_ptr(int));
+
+  extern proc gr_inqmarkercolorind(ref ptr : int);
+  proc inqmarkercolorind() {
+    var color : int;
+    gr_inqmarkercolorind(color);
+    return color;
+  }
 
   extern "gr_settextfontprec" proc settextfontprec(font : int, precision : int);
+
   extern "gr_setcharexpan" proc setcharexpan(factor : real);
+
   extern "gr_setcharspace" proc setcharspace(space : real);
+
   extern "gr_settextcolorind" proc settextcolorind(color : int);
+
   extern "gr_setcharheight" proc setcharheight(height : real);
+
   extern "gr_setcharup" proc setcharup(ux : real, uy : real);
+
   extern "gr_settextpath" proc settextpath(path : int);
+
   extern "gr_settextalign" proc settextalign(horizontal : int, vertical : int);
+
   extern "gr_setfillintstyle" proc setfillintstyle(style : int);
-  extern proc gr_inqfillintstyle(style : c_ptr(int));
-  // TODO
+
+  extern proc gr_inqfillintstyle(ref style : int);
+  proc inqfillintstyle() {
+    var style : int;
+    gr_inqfillintstyle(style);
+    return style;
+  }
 
   extern "gr_setfillstyle" proc setfillstyle(ind : int);
+
   extern "gr_setfillcolorind" proc setfillcolorind(color : int);
-  extern proc gr_inqfillcolorind(color : c_ptr(int));
-  // TODO
+
+  extern proc gr_inqfillcolorind(ref color : int);
+  proc inqfillcolorind() {
+    var color : int;
+    gr_inqfillcolorind(color);
+    return color;
+  }
 
   extern "gr_setcolorrep" proc setcolorrep(color_index : int, red : real, green : real, blue : real);
+
   extern "gr_setwindow" proc setwindow(xmin : real, xmax : real, ymin : real, ymax : real);
-  extern proc gr_inqwindow(xmin : c_ptr(real), xmax : c_ptr(real), 
-                           ymin : c_ptr(real), ymax : c_ptr(real));
-  // TODO
+
+  extern proc gr_inqwindow(ref xmin : real, ref xmax : real, 
+                           ref ymin : real, ref ymax : real);
+  proc inqwindow() {
+    var xmin, xmax, ymin, ymax : int;
+    gr_inqwindow(xmin, xmax, ymin, ymax);
+    return (xmin, xmax, ymin, ymax);
+  }
 
   extern "gr_setviewport" proc gr_setviewport(xmin : real, xmax : real, ymin : real, ymax : real);
 
-  extern proc gr_inqviewport(xmin : c_ptr(real), xmax : c_ptr(real), 
-                             ymin : c_ptr(real), ymax : c_ptr(real));
-  // TODO
+  extern proc gr_inqviewport(ref xmin : real, ref xmax : real, 
+                             ref ymin : real, ref ymax : real);
+  proc inqviewport() {
+    var xmin, xmax, ymin, ymax : int;
+    gr_inqviewport(xmin, xmax, ymin, ymax);
+    return (xmin, xmax, ymin, ymax);
+  }
 
   extern "gr_selntran" proc selntran(transform : int);
+
   extern "gr_setclip" proc setclip(indicator : int);
+
   extern "gr_setwswindow" proc setwswindow(xmin : real, xmax : real, ymin : real, ymax : real);
+
   extern "gr_setwsviewport" proc setwsviewport(xmin : real, xmax : real, ymin :real, ymax : real);
+
   extern "gr_createseg" proc createseg(n : int);
+
   extern "gr_copysegws" proc copysegws(n : int);
+
   extern "gr_redrawsegws" proc redrawsegws();
+
   extern "gr_setsegtran" proc setsegtran(segment : int, fx : real, fy : real, transx : real, transy : real, 
                             phi : real, scalex : real, scaley : real);
+
   extern "gr_closeseg" proc closeseg();
+
   extern "gr_emergencyclosegks" proc emergencyclosegks();
+
   extern "gr_updategks" proc updategks();
+
   extern "gr_setspace" proc setspace(zmin : real, zmax : real, rotation : int, tilt : int) : int;
 
   extern proc gr_inqspace(ref zmin : real, ref zmax : real, ref rotation : int, ref tilt : int);
@@ -215,6 +275,7 @@ module GRPlot {
 
   extern "gr_axes" proc axes(x_tick : real, y_tick : real, x_org : real, y_org : real, 
                       major_x : int, major_y : int, tick_size : real);
+
   extern proc gr_axeslbl(x_tick : real, y_tick : real, x_org : real, y_org : real, major_x : int, 
                         major_y : int, tick_size : real, fpx : c_fn_ptr, fpy : c_fn_ptr);
   // TODO
@@ -260,21 +321,24 @@ module GRPlot {
   extern proc gr_surface(nx : int, ny : int, 
                          px : [] real, py : [] real, pz : [] real, 
                          option : int);
-  proc surface(px : [] real, py : [] real, pz : [] real, option : int) where pz.size == px.size * py.size {
+  proc surface(px : [] real, py : [] real, pz : [] real, option : int) {
+    if !(pz.size == px.size * py.size) then halt("Incorrect dimensions for pz");
     gr_surface(px.size, px, py.size, py, pz, option);
   }
 
   extern proc gr_contour(nx : int, ny : int , nh : int, 
                          px : [] real, py : [] real, h : [] real, pz : [] real, 
                          majorH : int);
-  proc contour(px : [] real, py : [] real, h : [] real, pz : [] real, majorH : int) where pz.size == px.size * py.size {
+  proc contour(px : [] real, py : [] real, h : [] real, pz : [] real, majorH : int) {
+    if !(pz.size == px.size * py.size) then halt("Incorrect dimensions for pz");
     gr_contour(px.size, py.size, h.size, px, py, h, pz, majorH);
   }
   
   extern proc  gr_contourf(nx : int, ny : int, nh : int, 
                  px : [] real, py : [] real, h : [] real, pz : [] real, 
                  major_h : int);
-  proc contourf(px : [] real, py : [] real, h : [] real, pz : [] real, majorH : int) where pz.size == px.size * py.size {
+  proc contourf(px : [] real, py : [] real, h : [] real, pz : [] real, majorH : int) {
+    if !(pz.size == px.size * py.size) then halt("Incorrect dimensions for pz");
     gr_contourf(px.size, py.size, h.size, px, py, h, pz, majorH);
   }
 
@@ -295,7 +359,6 @@ module GRPlot {
     return mapIndex;
   }
 
-  // TODO
   extern proc gr_setcolormapfromrgb(n : int, r : [] real, g : [] real, b : [] real, x : c_ptr(real));
   proc setcolormapfromrgb(r : [?D] real, g : [D] real, b : [D] real, positions = nil) {
     gr_setcolormapfromrgb(r.size, r, g, b, positions);
@@ -326,8 +389,11 @@ module GRPlot {
   }
 
   extern "gr_tick" proc tick(amin : real, amax : real) : real;
+
   extern "gr_validaterange" proc validaterange(amin : real, amax : real) : int;
+
   extern "gr_adjustlimits" proc adjustlimits(ref amin : real, amax : real);
+
   extern "gr_adjustrange" proc adjustrange(ref amin : real, ref amax : real);
   
   extern proc gr_beginprint(pathname : c_string);
@@ -341,13 +407,19 @@ module GRPlot {
   }
   
   extern "gr_endprint" proc endprint();
+
   extern "gr_ndctowc" proc ndctowc(ref x : real, ref y : real);
+
   extern "gr_wctondc" proc wctondc(ref x : real, ref y : real);
+
   extern "gr_wc3towcx" proc wc3towcx(ref x : real, ref y : real, ref z : real);
 
   extern "gr_drawrect" proc drawrect(xmin : real, xmax : real, ymin : real, ymax : real);
+
   extern "gr_fillrect" proc fillrect(xmin : real, xmax : real, ymin : real, ymax : real);
+
   extern "gr_drawarc" proc drawarc(xmin : real, xmax : real, ymin : real, ymax : real, a1: real, a2 : real);
+
   extern "gr_fillarc" proc fillarc(xmin : real, xmax : real, ymin : real, ymax : real, a1: real, a2 : real);
   
   extern proc gr_drawpath(n : int, points : real, codes : [] c_uchar, fill : int);
@@ -375,8 +447,21 @@ module GRPlot {
 
   extern "gr_settransparency" proc settransparency(alpha : real);
 
-  // TODO
-  extern "gr_setcoordxform" proc setcoordxform(mat : [] real) where setcoordxform.size == 6;
+  extern proc gr_setcoordxform(mat : [] real);
+  proc setcoordxform(mat : [?D] ?t) {
+    if mat.size != 6 {
+      halt("Matrix cannot be cast to valid dimensions 2x3");
+    }
+
+    if mat.eltType != real {
+      var matCast : [1..6] real = [x in mat] x : real;
+      gr_setcoordxform(matCast);
+      return;
+    } else {
+      gr_setcoordxform(mat);
+    }
+ 
+  }
   
   extern proc gr_begingraphics(path : c_string);
   proc begingraphics(path : string) {
@@ -412,11 +497,17 @@ module GRPlot {
   }
   
   extern "gr_precision" proc precision() : real;
+
   extern "gr_setregenflags" proc setregenflags(flag : int);
+
   extern "gr_inqregenflags" proc inqregenflags() : int;
+
   extern "gr_savestate" proc savestate();
+
   extern "gr_restorestate" proc restorestate();
+
   extern "gr_selectcontext" proc selectcontext(context : int);
+
   extern "gr_destroycontext" proc destroycontext(context : int);
 
   extern proc gr_uselinespec(linespec : c_string) : int;
@@ -516,7 +607,8 @@ use GRPlot;
 // setscale(10.0);
 // writeln(inqscale());
 writeln(version());
-setcolormapfromrgb([0.1, 0.2], [0.1, 0.2], [0.1, 0.2], nil);
+// setcolormapfromrgb([0.1, 0.2], [0.1, 0.2], [0.1, 0.2], nil);
+setcoordxform([1 ,2 ,3, 4, 5, 6]);
 while true{
   nothing;
 }
