@@ -10,10 +10,8 @@ module GRPlot {
   extern proc gr_inqdspsize(ref mWidth : real, ref mHeight : real, ref width : int, 
                             ref height : int);
   proc inqdspsize(){
-    var mwidth : real;
-    var mheight : real;
-    var width : int;
-    var height : int;
+    var mwidth, mheight : real;
+    var width, height : int;
     gr_inqdspsize(mwidth, mheight, width, height);
     return (mwidth, mheight, width, height);
   }
@@ -31,13 +29,13 @@ module GRPlot {
   extern "gr_updatews" proc updatews();
 
   extern proc gr_polyline(n : int, x : [] real, y : [] real);
-  proc polyline(x : [] ?t1, y : [] ?t2) {
+  proc polyline(x : [?D] real, y : [D] real) {
     gr_polyline(x.size, x, y);
-    gr_axes(gr_tick(0, 1), gr_tick(0, 1), 0, 0, 1, 1, -0.01);
+    // gr_axes(gr_tick(0, 1), gr_tick(0, 1), 0, 0, 1, 1, -0.01);
   }
   
   extern proc gr_polymarker(n : int, x : [] real, y : [] real);
-  proc polymarker(x : [] ?t1, y : [] ?t2) {
+  proc polymarker(x : [?D] real, y : [D] real) {
     gr_polymarker(x.size, x, y);
   }
 
@@ -46,31 +44,29 @@ module GRPlot {
     gr_text(x, y, text.c_str());
   }
 
-  extern proc gr_inqtext(x : real, y : real, str : c_string, tbx : c_ptr(real), tby : c_ptr(real));
+  extern proc gr_inqtext(x : real, y : real, str : c_string, tbx : [] real, tby : [] real);
   proc inqtext(x : real, y : real, text : string) {
-    var tbx : real;
-    var tby : real;
-    gr_inqtext(x, y, text.c_str(), c_ptrTo(tbx), c_ptrTo(tby));
+    var tbx, tby : [1..4] real;
+    gr_inqtext(x, y, text.c_str(), tbx, tby);
     return (tbx, tby);
   }
 
   extern proc gr_fillarea(n : int, x : [] real, y : [] real);
-  proc fillarea(x : [] real, y : [] real) {
+  proc fillarea(x : [?D] real, y : [D] real) {
     gr_fillarea(x.size, x, y);
   }
 
   extern proc gr_cellarray(xmin : real, xmax : real, ymin : real, ymax : real,
                            dimx : int, dimy : int, scol : int, srow : int, 
                            ncol : int, nrow : int, color : [] int);
-  proc cellarray(xmin : real, xmax : real, ymin : real, ymax : real, dimx : real, dimy : real, color : [] ?t) {
-    var colorCast = [elt in color] elt : int;
-    gr_cellarray(xmin, xmax, ymin, ymax, dimx, dimy, 1, 1, dimx, dimy, colorCast);
+  proc cellarray(xmin : real, xmax : real, ymin : real, ymax : real, dimx : real, dimy : real, color : [] int) {
+    gr_cellarray(xmin, xmax, ymin, ymax, dimx, dimy, 1, 1, dimx, dimy, color);
   }
 
   extern proc gr_nonuniformcellarray(x : [] real, y : [] real, dimx : int, 
                                      dimy : int, scol : int, ncol : int, 
                                      nrow : int, color : [] int);
-  proc nonuniformcellarray(x : [] real, y : real, dimx : int, dimy : int, color : [] int) {
+  proc nonuniformcellarray(x : [] real, y : [] real, dimx : int, dimy : int, color : [] int) where x.size == dimx+1 && y.size == dimy+1 {
     gr_nonuniformcellarray(x, y, dimx, dimy, 1, 1, dimx, dimy, color); 
   }
 
@@ -84,7 +80,7 @@ module GRPlot {
 
   extern proc gr_gdp(n : int, x : c_ptr(real), y : c_ptr(real), primid : int, 
                      ldr : int, datrec : c_ptr(int));
-  proc gdp(x : [] real, y : [] real, primid : int, datarec : [] int) {
+  proc gdp(x : [?D] real, y : [D] real, primid : int, datarec : [] int) {
     gr_gdp(x.size, x, y, primid, datarec.size, datarec);
   }
 
@@ -248,23 +244,50 @@ module GRPlot {
   }
 
   extern proc gr_polymarker3d(n : int, px : c_ptr(real), py : c_ptr(real), pz : c_ptr(real));
+  proc polymarker3d(px : [?D] real, py : [D] real, pz : [D] real) {
+    gr_polymarker3d(px.size, px, py, pz);
+  }
+
   extern proc gr_axes3d(x_tick : real, y_tick : real, z_tick : real, 
                         x_org : real, y_org : real, z_org : real, 
                         major_x : int, major_y : int, major_z : int, tick_size : real);
-  extern proc titles3d(x_title : c_string, y_title : c_string, z_title : c_string);
+
+  extern proc gr_titles3d(xtitle : c_string, ytitle : c_string, ztitle : c_string);
+  proc titles3d(xtitle : string = "", ytitle : string = "", ztitle : string = "") {
+    gr_titles3d(xtitle.c_str(), ytitle.c_str(), ztitle.c_str());
+  }
+
   extern proc gr_surface(nx : int, ny : int, 
-                         px : c_ptr(real), py : c_ptr(real), pz : c_ptr(real), 
+                         px : [] real, py : [] real, pz : [] real, 
                          option : int);
+  proc surface(px : [] real, py : [] real, pz : [] real, option : int) where pz.size == px.size * py.size {
+    gr_surface(px.size, px, py.size, py, pz, option);
+  }
+
   extern proc gr_contour(nx : int, ny : int , nh : int, 
-                         px : c_ptr(real), py : c_ptr(real), h : c_ptr(real), pz : c_ptr(real), 
-                         mahor_h : int);
+                         px : [] real, py : [] real, h : [] real, pz : [] real, 
+                         majorH : int);
+  proc contour(px : [] real, py : [] real, h : [] real, pz : [] real, majorH : int) where pz.size == px.size * py.size {
+    gr_contour(px.size, py.size, h.size, px, py, h, pz, majorH);
+  }
+  
   extern proc  gr_contourf(nx : int, ny : int, nh : int, 
-                 px : c_ptr(real), py : c_ptr(real), h : c_ptr(real), pz : c_ptr(real), 
+                 px : [] real, py : [] real, h : [] real, pz : [] real, 
                  major_h : int);
-  extern proc gr_tricontour(npoints : int, x : c_ptr(real), y :c_ptr(real), z : c_ptr(real), nlevels : int, evels : c_ptr(real));
-  extern proc gr_hexbin(n : int, x : c_ptr(real), y : c_ptr(real), nbins : int) : int;
+  proc contourf(px : [] real, py : [] real, h : [] real, pz : [] real, majorH : int) where pz.size == px.size * py.size {
+    gr_contourf(px.size, py.size, h.size, px, py, h, pz, majorH);
+  }
+
+  extern proc gr_tricontour(npoints : int, x : [] real, y : [] real, z : [] real, nlevels : int, levels : [] real);
+  proc tricontour(x : [?D] real, y : [D] real, z : [D] real, levels : int) {
+    gr_tricontour(x.size, x, y, z, levels.size, levels);
+  }
+
+  extern proc gr_hexbin(n : int, x : [] real, y : [] real, nbins : int) : int;
+  proc hexbin(x : [?D] real, y : [D] real, nbins : int) return gr_hexbin(x.size, x, y, nbins);
   
   extern "gr_setcolormap" proc setcolormap(map_index : int);
+
   extern proc gr_inqcolormap(ref mapIndex : int);
   proc inqcolormap() {
     var mapIndex : int;
@@ -273,8 +296,14 @@ module GRPlot {
   }
 
   // TODO
-  extern proc gr_setcolormapfromrgb(n : int, r : c_ptr(real), g : c_ptr(real), b : c_ptr(real), x : c_ptr(real));
-  
+  extern proc gr_setcolormapfromrgb(n : int, r : [] real, g : [] real, b : [] real, x : c_ptr(real));
+  proc setcolormapfromrgb(r : [?D] real, g : [D] real, b : [D] real, positions = nil) {
+    gr_setcolormapfromrgb(r.size, r, g, b, positions);
+  }
+  proc setcolormapfromrgb(r : [?D] real, g : [D] real, b : [D] real, positions : [D] real) {
+    gr_setcolormapfromrgb(r.size, r, g, b, c_ptrTo(positions));
+  }
+
   extern "gr_colorbar" proc colorbar();
 
   // TODO : check this
@@ -286,21 +315,37 @@ module GRPlot {
   }
 
   extern proc gr_inqcolorfromrgb(r : real, g : real, b : real) : int;
-  // TODO
+  proc inqcolorfromrgb( r: real, g : real, b : real) {
+    return gr_inqcolorfromrgb(r, g, b);
+  }
 
-  extern proc gr_hsvtorgb(h : real, s :real, v :real, r :c_ptr(real), g : c_ptr(real), b : c_ptr(real));
-  extern proc gr_tick(amin : real, amax : real) : real;
-  extern proc gr_validaterange(amin : real, amax : real) : int;
-  extern proc gr_adjustlimits(amin : c_ptr(real), amax : c_ptr(real));
-  extern proc gr_adjustrange(amin : c_ptr(real), amax : c_ptr(real));
+  extern proc gr_hsvtorgb(h : real, s :real, v :real, ref r : real, ref g : real, ref b : real);
+  proc hsvtorgb(h : real, s : real, v : real) {
+    var r, g, b : real;
+    gr_hsvtorgb(h, s, v, r, g, b);
+    return (r, g, b);
+  }
+
+  extern "gr_tick" proc tick(amin : real, amax : real) : real;
+  extern "gr_validaterange" proc validaterange(amin : real, amax : real) : int;
+  extern "gr_adjustlimits" proc adjustlimits(ref amin : real, amax : real);
+  extern "gr_adjustrange" proc adjustrange(ref amin : real, ref amax : real);
+  
   extern proc gr_beginprint(pathname : c_string);
+  proc beginprint(pathname : string) {
+    gr_beginprint(pathname.c_str());
+  }
+
   extern proc gr_beginprintext(pathname : c_string, mode : c_string, format : c_string, orientation : c_string);
+  proc beginprinttext(pathname : string, mode : string, format : string, orientation : string) {
+    gr_beginprintext(pathname.c_str(), mode.c_str(), format.c_str(), orientation.c_str());
+  }
   
   extern "gr_endprint" proc endprint();
+  extern "gr_ndctowc" proc ndctowc(ref x : real, ref y : real);
+  extern "gr_wctondc" proc wctondc(ref x : real, ref y : real);
+  extern "gr_wc3towcx" proc wc3towcx(ref x : real, ref y : real, ref z : real);
 
-  extern proc gr_ndctowc(x : c_ptr(real), y : c_ptr(real));
-  extern proc gr_wctondc(x : c_ptr(real), y : c_ptr(real));
-  extern proc gr_wc3towcx(x : c_ptr(real), y : c_ptr(real), z : c_ptr(real));
   extern proc gr_drawrect(xmin : real, xmax : real, ymin : real, ymax : real);
   extern proc gr_fillrect(xmin : real, xmax : real, ymin : real, ymax : real);
   extern proc gr_drawarc(xmin : real, xmax : real, ymin : real, ymax : real, a1: real, a2 : real);
@@ -410,7 +455,10 @@ module GRPlot {
 
   extern proc gr_setresamplemethod(method : c_uint);
   extern proc gr_inqresamplemethod(flag : c_ptr(c_uint));
-  extern proc gr_path(n : int, x : c_ptr(real), y : c_ptr(real), codes : c_string);
+  extern proc gr_path(n : int, x : [] real, y : [] real, codes : c_string);
+  proc path(x : [?D] real, y : [D] real, codes : string) {
+    gr_path(x.size, x, y, codes.c_str());
+  }
   // TODO
   // Line 936 GR.jl
 
@@ -442,6 +490,7 @@ use GRPlot;
 // setscale(10.0);
 // writeln(inqscale());
 writeln(version());
+setcolormapfromrgb([0.1, 0.2], [0.1, 0.2], [0.1, 0.2], nil);
 while true{
   nothing;
 }
