@@ -353,7 +353,7 @@ module GRPlot {
                          method : int, extrapval : real);
   extern proc gr_newmeta() : c_void_ptr;
   extern proc gr_deletemeta(arg : c_void_ptr);
-  extern proc gr_finalizemeta();
+  extern "gr_finalizemeta" proc gr_finalizemeta();
 
   // Finish gr_meta...
   extern proc gr_meta_args_push(arg : c_void_ptr, str : c_string ...?n);
@@ -366,7 +366,9 @@ module GRPlot {
   extern proc gr_sendmeta_ref(const handle : c_void_ptr, key : c_string, fmt : c_char, const data : c_void_ptr, len : int) : int;
   extern proc gr_sendmeta_args(handle : c_void_ptr, arg : c_void_ptr) : int;
   extern proc gr_closemeta(const handle : c_void_ptr);
-  extern proc gr_clearmeta() : int;
+
+  extern "gr_clearmeta" proc clearmeta() : int;
+
   extern proc gr_inputmeta(const arg : c_void_ptr) : int;
   extern proc gr_mergemeta(const arg : c_void_ptr) : int;
   extern proc gr_mergemeta_named(const args : c_void_ptr, identificator : c_string) : int;
@@ -396,11 +398,23 @@ module GRPlot {
   // TODO
   // Line 936 GR.jl
 
-  extern proc gr_setborderwidth(width : real);
-  extern proc gr_inqborderwidth(width : c_ptr(real));
-  extern proc gr_setbordercolorind(color : int);
-  extern proc gr_inqbordercolorind(color : c_ptr(int));
+  extern "gr_setborderwidth" proc setborderwidth(width : real);
 
+  extern proc gr_inqborderwidth(ref width : real);
+  proc inqborderwidth() {
+    var width : real;
+    gr_inqborderwidth(width);
+    return width;
+  }
+
+  extern "gr_setbordercolorind" proc setbordercolorind(color : int);
+
+  extern proc gr_inqbordercolorind(ref color : int);
+  proc inqbordercolorind() {
+    var color : int;
+    gr_inqbordercolorind(color);
+    return color;
+  }
 
 }
 
