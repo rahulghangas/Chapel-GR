@@ -61,23 +61,47 @@ module GRPlot {
 
   extern proc gr_cellarray(xmin : real, xmax : real, ymin : real, ymax : real,
                            dimx : int, dimy : int, scol : int, srow : int, 
-                           ncol : int, nrow : int, color : c_ptr(int));
-  proc cellarray(xmin : real, xmax : real, ymin : real, ymax : real, dimx : real, dimy : real, color : [] int){
-    gr_cellarray(xmin, xmax, ymin, ymax, dimx, dimy, 1, 1, dimx, dimy, color);
+                           ncol : int, nrow : int, color : [] int);
+  proc cellarray(xmin : real, xmax : real, ymin : real, ymax : real, dimx : real, dimy : real, color : [] ?t){
+    var colorCast = [elt in color] elt : int;
+    gr_cellarray(xmin, xmax, ymin, ymax, dimx, dimy, 1, 1, dimx, dimy, colorCast);
   }
 
-  extern proc gr_nonuniformcellarray(x : c_ptr(real), y : c_ptr(real), dimx : int, 
+  extern proc gr_nonuniformcellarray(x : [] real, y : [] real, dimx : int, 
                                      dimy : int, scol : int, ncol : int, 
-                                     nrow : int, color : c_ptr(int));
-  extern proc gr_polarcellarray(x_org : real, y_org : real, phimin : real, 
+                                     nrow : int, color : [] int);
+  proc nonuniformcellarray(x : [] real, y : real, dimx : int, dimy : int, color : [] int){
+    gr_nonuniformcellarray(x, y, dimx, dimy, 1, 1, dimx, dimy, color); 
+  }
+
+  extern proc gr_polarcellarray(xorg : real, yorg : real, phimin : real, 
                                 phimax : real, rmin : real, rmax : real, dimphi : int,
                                 dimr : int, scol : int, srow : int, ncol : int,
                                 nrow : int, color : c_ptr(int));
+  proc polarcellarray(xorg : real, yorg : real, phimin : real, phimax : real, rmin : real, rmax : real, dimphi : int, dimr : int, color : [] int){
+    gr_polarcellarray(xorg, yorg, phimin, phimax, rmin, rmax, dimphi, dimr, 1, 1, dimphi, dimr, color);
+  }
+
   extern proc gr_gdp(n : int, x : c_ptr(real), y : c_ptr(real), primid : int, 
                      ldr : int, datrec : c_ptr(int));
+  proc gdp(x : [] real, y : [] real, primid : int, datarec : [] int) {
+    gr_gdp(x.size, x, y, primid, datarec.size, datarec);
+  }
+
   extern proc gr_spline(n : int, px : c_ptr(real), py : c_ptr(real), m : int, method : int);
+  proc spline(x : [] real, y : real, m : int, method : int){
+    gr_spline(x.size, x, y, m, method);
+  }
+
   extern proc gr_gridit(nd : int, xd : c_ptr(real), yd : c_ptr(real), zd : c_ptr(real),
                         nx : int, ny : int, x : c_ptr(real), y : c_ptr(real), z : c_ptr(real));
+  proc gridit(xd : [] real, yd : [] real, zd : [] real, nx : int, ny : int){
+    var x : [1..nx] real = {1..nx};
+    var y : [1..ny] real = {1..ny};
+    var z : [1..nx*ny] real = {1..nx*ny};
+    gr_gridit(xd.size, xd, yd, zd, nx, ny, x, y, z);
+  }
+
   extern proc gr_setlinetype(lineType : int);
   extern proc gr_inqlinetype(ptr : c_ptr(real));
   extern proc gr_setlinewidth(width : real);
@@ -260,6 +284,9 @@ module GRPlot {
   extern proc gr_setresamplemethod(method : c_uint);
   extern proc gr_inqresamplemethod(flag : c_ptr(c_uint));
   extern proc gr_path(n : int, x : c_ptr(real), y : c_ptr(real), codes : c_string);
+  // TODO
+  // Line 936 GR.jl
+
   extern proc gr_setborderwidth(width : real);
   extern proc gr_inqborderwidth(width : c_ptr(real));
   extern proc gr_setbordercolorind(color : int);
