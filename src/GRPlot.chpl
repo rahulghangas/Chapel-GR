@@ -181,17 +181,42 @@ module GRPlot {
   extern "gr_createseg" proc createseg(n : int);
   extern "gr_copysegws" proc copysegws(n : int);
   extern "gr_redrawsegws" proc redrawsegws();
-  extern proc gr_setsegtran(segment : int, fx : real, fy : real, transx : real, transy : real, 
+  extern "gr_setsegtran" proc setsegtran(segment : int, fx : real, fy : real, transx : real, transy : real, 
                             phi : real, scalex : real, scaley : real);
-  extern proc gr_closeseg();
-  extern proc gr_emergencyclosegks();
-  extern proc gr_updategks();
-  extern proc gr_setspace(zmin : real, zmax : real, rotation : int, tilt : int) : int;
-  extern proc gr_inqspace(a : c_ptr(real), b : c_ptr(real), c : c_ptr(int), d : c_ptr(int));
-  extern proc gr_setscale(options : int) : int;
-  extern proc gr_inqscale(options : c_ptr(int));
+  extern "gr_closeseg" proc closeseg();
+  extern "gr_emergencyclosegks" proc emergencyclosegks();
+  extern "gr_updategks" proc updategks();
+  extern "gr_setspace" proc setspace(zmin : real, zmax : real, rotation : int, tilt : int) : int;
+
+  extern proc gr_inqspace(ref zmin : real, ref zmax : real, ref rotation : int, ref tilt : int);
+  proc inqspace() {
+    var zmin, zmax : real;
+    var rotation, tilt : int;
+    gr_inqspace(zmin ,zmax, rotation, tilt);
+    return (zmin, zmax, rotation, tilt);
+  }
+
+  extern "gr_setscale" proc setscale(options : int) : int;
+  
+  extern proc gr_inqscale(ref options : int);
+  proc inqscale() {
+    var options : int;
+    gr_inqscale(options);
+    return options;
+  }
+
   extern proc gr_textext(x : real, y : real, str : c_string) : int;
+  proc textext(x : integral, y : integral, str: string) {
+    return gr_textext(x : real, y : real, str.c_str());
+  }
+
   extern proc gr_inqtextext(x : real, y : real, str : c_string, tbx : c_ptr(real), tby : c_ptr(real));
+  proc inqtextext(x: integral, y : integral, str : string) {
+    var tbx, tby : [1..4] real;
+    gr_inqtextext(x, y, str.c_str(), tbx, tby);
+    return (tbx, tby);
+  }
+
   extern proc gr_axes(x_tick : real, y_tick : real, x_org : real, y_org : real, 
                       major_x : int, major_y : int, tick_size : real);
   extern proc gr_axeslbl(x_tick : real, y_tick : real, x_org : real, y_org : real, major_x : int, 
@@ -336,10 +361,12 @@ module GRPlot {
 }
 
 use GRPlot;
-var a : [1..10] real = [0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0];
-var b : [1..10] real = [1.0,0.9,0.8,0.7,0.6,0.5,0.4,0.3,0.2,0.1];
-polyline(a, b);
-writeln(inqlinewidth());
+// var a : [1..10] real = [0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0];
+// var b : [1..10] real = [1.0,0.9,0.8,0.7,0.6,0.5,0.4,0.3,0.2,0.1];
+// polyline(a, b);
+// writeln(inqlinewidth());
+// setscale(10.0);
+// writeln(inqscale());
 while true{
   nothing;
 }
