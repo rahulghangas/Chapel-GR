@@ -263,12 +263,30 @@ module GRPlot {
                  major_h : int);
   extern proc gr_tricontour(npoints : int, x : c_ptr(real), y :c_ptr(real), z : c_ptr(real), nlevels : int, evels : c_ptr(real));
   extern proc gr_hexbin(n : int, x : c_ptr(real), y : c_ptr(real), nbins : int) : int;
-  extern proc gr_setcolormap(map_index : int);
-  extern proc gr_inqcolormap(map_index : c_ptr(int));
+  
+  extern "gr_setcolormap" proc setcolormap(map_index : int);
+  extern proc gr_inqcolormap(ref mapIndex : int);
+  proc inqcolormap() {
+    var mapIndex : int;
+    gr_inqcolormap(mapIndex);
+    return mapIndex;
+  }
+
   extern proc gr_setcolormapfromrgb(n : int, r : c_ptr(real), g : c_ptr(real), b : c_ptr(real), x : c_ptr(real));
-  extern proc gr_colorbar();
-  extern proc gr_inqcolor(color : int, rgb : c_ptr(int));
+  
+  extern "gr_colorbar" proc colorbar();
+
+  // TODO : check this
+  extern proc gr_inqcolor(color : int, ref rgb : int);
+  proc inqcolor(color : int) {
+    var rgb : int;
+    gr_inqcolor(color, rgb);
+    return rgb;
+  }
+
   extern proc gr_inqcolorfromrgb(r : real, g : real, b : real) : int;
+  // TODO
+
   extern proc gr_hsvtorgb(h : real, s :real, v :real, r :c_ptr(real), g : c_ptr(real), b : c_ptr(real));
   extern proc gr_tick(amin : real, amax : real) : real;
   extern proc gr_validaterange(amin : real, amax : real) : int;
@@ -276,7 +294,9 @@ module GRPlot {
   extern proc gr_adjustrange(amin : c_ptr(real), amax : c_ptr(real));
   extern proc gr_beginprint(pathname : c_string);
   extern proc gr_beginprintext(pathname : c_string, mode : c_string, format : c_string, orientation : c_string);
-  extern proc gr_endprint();
+  
+  extern "gr_endprint" proc endprint();
+
   extern proc gr_ndctowc(x : c_ptr(real), y : c_ptr(real));
   extern proc gr_wctondc(x : c_ptr(real), y : c_ptr(real));
   extern proc gr_wc3towcx(x : c_ptr(real), y : c_ptr(real), z : c_ptr(real));
@@ -295,9 +315,13 @@ module GRPlot {
   extern proc gr_settransparency(alpha : real);
   extern proc gr_setcoordxform(mat : c_ptr(real));
   extern proc gr_begingraphics(path : c_string);
-  extern proc gr_endgraphics();
-  extern proc gr_getgraphics() : c_string;
+
+  extern "gr_endgraphics" proc endgraphics();
+  extern "gr_getgraphics" proc getgraphics() : c_string;
+
   extern proc gr_getgraphics(str : c_string) : int;
+  proc getgraphics(str : string) return gr_getgraphics(str.c_str());
+
   extern proc gr_mathtex(x : real, y : real, str : c_string);
   extern proc gr_inqmathtex(x : real, y :real, str : c_string, tbx : c_ptr(real), tby : c_ptr(real));
   extern proc gr_beginselection(x : int, y: int);
@@ -305,14 +329,18 @@ module GRPlot {
   extern proc gr_moveselection(x : real, y : real);
   extern proc gr_resizeselection(a : int, x : real, y: real);
   extern proc gr_inqbbox(xmin : c_ptr(real), xmax : c_ptr(real), ymin : c_ptr(real), ymax : c_ptr(real));
-  extern proc gr_precision() : real;
-  extern proc gr_setregenflags(flag : int);
-  extern proc gr_inqregenflags() : int;
-  extern proc gr_savestate();
-  extern proc gr_restorestate();
-  extern proc gr_selectcontext(context : int);
-  extern proc gr_destroycontext(context : int);
+  
+  extern "gr_precision" proc precision() : real;
+  extern "gr_setregenflags" proc setregenflags(flag : int);
+  extern "gr_inqregenflags" proc inqregenflags() : int;
+  extern "gr_savestate" proc savestate();
+  extern "gr_restorestate" proc restorestate();
+  extern "gr_selectcontext" proc selectcontext(context : int);
+  extern "gr_destroycontext" proc destroycontext(context : int);
+
   extern proc gr_uselinespec(linespec : c_string) : int;
+  proc uselinespec(linespec : string) return gr_uselinespec(linespec.c_str());
+
   extern proc gr_delaunay(n : int, const x : real, const y : real, ntri : c_ptr(int), traingles : c_ptr(c_ptr(int)));
   extern proc gr_reducepoints(n : int, const x : real, const y : real, points : int, x_array : c_ptr(real), y_array : c_ptr(real));
   extern proc gr_trisurface(n : int, px : c_ptr(real), py : c_ptr(real), pz : c_ptr(real));
