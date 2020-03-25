@@ -324,9 +324,9 @@ module GRPlot {
 
   extern proc gr_mathtex(x : real, y : real, str : c_string);
   extern proc gr_inqmathtex(x : real, y :real, str : c_string, tbx : c_ptr(real), tby : c_ptr(real));
-  extern proc gr_beginselection(x : int, y: int);
-  extern proc gr_endselection();
-  extern proc gr_moveselection(x : real, y : real);
+  extern "gr_beginselection" proc beginselection(x : int, y: int);
+  extern "gr_endselection" proc endselection();
+  extern "gr_moveselection" proc moveselection(x : real, y : real);
   extern proc gr_resizeselection(a : int, x : real, y: real);
   extern proc gr_inqbbox(xmin : c_ptr(real), xmax : c_ptr(real), ymin : c_ptr(real), ymax : c_ptr(real));
   
