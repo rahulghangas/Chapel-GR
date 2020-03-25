@@ -346,17 +346,28 @@ module GRPlot {
   extern "gr_wctondc" proc wctondc(ref x : real, ref y : real);
   extern "gr_wc3towcx" proc wc3towcx(ref x : real, ref y : real, ref z : real);
 
-  extern proc gr_drawrect(xmin : real, xmax : real, ymin : real, ymax : real);
-  extern proc gr_fillrect(xmin : real, xmax : real, ymin : real, ymax : real);
-  extern proc gr_drawarc(xmin : real, xmax : real, ymin : real, ymax : real, a1: real, a2 : real);
-  extern proc gr_fillarc(xmin : real, xmax : real, ymin : real, ymax : real, a1: real, a2 : real);
-  extern proc gr_drawpath(n : int, points : c_ptr(real), codes : c_ptr(c_uchar), fill : int);
+  extern "gr_drawrect" proc drawrect(xmin : real, xmax : real, ymin : real, ymax : real);
+  extern "gr_fillrect" proc fillrect(xmin : real, xmax : real, ymin : real, ymax : real);
+  extern "gr_drawarc" proc drawarc(xmin : real, xmax : real, ymin : real, ymax : real, a1: real, a2 : real);
+  extern "gr_fillarc" proc fillarc(xmin : real, xmax : real, ymin : real, ymax : real, a1: real, a2 : real);
+  
+  extern proc gr_drawpath(n : int, points : real, codes : [] c_uchar, fill : int);
+  proc drawpath(points : [] real, codes : [] integral, fill : int) {
+    var _codes = [x in codes] x : c_uchar;
+    gr_drawpath(codes.size, points, _codes, fill);
+  }
 
   extern "gr_setarrowstyle" proc setarrowstyle(style : int);
   extern "gr_setarrowsize" proc setarrowsize(size : real);
+  extern "gr_drawarrow" proc drawarrow(x1 : real, x2 : real, y1 : real, y2 : real);
+  
+  // TODO
+  // extern proc gr_readimage(path : c_string, ref width : int, ref height : int, data : c_ptr(c_ptr(int))) : int;
+  // proc readimage(path : string) {
+  //   var width, height : int;
+  //   var data : [] 
+  // }
 
-  extern proc gr_drawarrow(x1 : real, x2 : real, y1 : real, y2 : real);
-  extern proc gr_readimage(path : c_string, width : c_ptr(int), height : c_ptr(int), data : c_ptr(c_ptr(int))) : int;
   extern proc gr_drawimage(xmin : real, xmax : real, ymin : real, ymax : real, width : int, height : int, data : c_ptr(int), model : int);
   extern proc gr_importgraphics(path : c_string) : int;
   extern proc gr_setshadow(offsetx : real, offsety : real, blur : real);
