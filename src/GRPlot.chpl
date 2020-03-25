@@ -232,18 +232,18 @@ module GRPlot {
 
   extern proc gr_verrorbars(n : int, px : c_ptr(real), py : c_ptr(real), 
                             e1 : c_ptr(real), e2 : c_ptr(real));
-  proc verrorbars(px : [] ?t1, py : [] ?t2, e1 : [] ?t3, e2 : [] ?t4) {
+  proc verrorbars(px : [?D] real, py : [D] real, e1 : [D] real, e2 : [D] real) {
     gr_verrorbars(px.size, px, py, e1, e2);
   }
 
   extern proc gr_herrorbars(n : int, px : c_ptr(real), py : c_ptr(real), 
                             e1 : c_ptr(real), e2 : c_ptr(real));
-  proc herrorbars(px : [] ?t1, py : [] ?t2, e1 : [] ?t3, e2 : [] ?t4) {
+  proc herrorbars(px : [?D] real, py : [D] real, e1 : [D] real, e2 : [D] real) {
     gr_herrorbars(px.size, px, py, e1, e2);
   }
 
   extern proc gr_polyline3d(n : int, px : c_ptr(real), py : c_ptr(real), pz : c_ptr(real));
-  proc polyline3d(px : [] ?t1, py : [] ?t2, pz : [] ?t3) {
+  proc polyline3d(px : [?D] real, py : [D] real, pz : [D] real) {
     gr_polyline3d(px.size, px, py, pz);
   }
 
@@ -272,6 +272,7 @@ module GRPlot {
     return mapIndex;
   }
 
+  // TODO
   extern proc gr_setcolormapfromrgb(n : int, r : c_ptr(real), g : c_ptr(real), b : c_ptr(real), x : c_ptr(real));
   
   extern "gr_colorbar" proc colorbar();
@@ -305,16 +306,25 @@ module GRPlot {
   extern proc gr_drawarc(xmin : real, xmax : real, ymin : real, ymax : real, a1: real, a2 : real);
   extern proc gr_fillarc(xmin : real, xmax : real, ymin : real, ymax : real, a1: real, a2 : real);
   extern proc gr_drawpath(n : int, points : c_ptr(real), codes : c_ptr(c_uchar), fill : int);
-  extern proc gr_setarrowstyle(style : int);
-  extern proc gr_setarrowsize(size : real);
+
+  extern "gr_setarrowstyle" proc setarrowstyle(style : int);
+  extern "gr_setarrowsize" proc setarrowsize(size : real);
+
   extern proc gr_drawarrow(x1 : real, x2 : real, y1 : real, y2 : real);
   extern proc gr_readimage(path : c_string, width : c_ptr(int), height : c_ptr(int), data : c_ptr(c_ptr(int))) : int;
   extern proc gr_drawimage(xmin : real, xmax : real, ymin : real, ymax : real, width : int, height : int, data : c_ptr(int), model : int);
   extern proc gr_importgraphics(path : c_string) : int;
   extern proc gr_setshadow(offsetx : real, offsety : real, blur : real);
-  extern proc gr_settransparency(alpha : real);
+
+  extern "gr_settransparency" proc settransparency(alpha : real);
+
+  // TODO
   extern proc gr_setcoordxform(mat : c_ptr(real));
+  
   extern proc gr_begingraphics(path : c_string);
+  proc begingraphics(path : string) {
+    gr_begingraphics(path.c_str());
+  }
 
   extern "gr_endgraphics" proc endgraphics();
   extern "gr_getgraphics" proc getgraphics() : c_string;
@@ -382,8 +392,14 @@ module GRPlot {
   // TODO : dumpmeta and dumpmeta_json
 
   extern proc gr_load_from_str(str : c_string) : int;
+  proc loadFromStr(str : string) return gr_load_from_str(str.c_str());
+
   extern proc gr_dumpmeta_json_str() : c_string;
+  proc dumpMetaJsonStr() return gr_dumpmeta_json_str() : string;
+
   extern proc gr_version() : c_string;
+  proc version() return gr_version() : string;
+
   extern proc gr_shade(n : int, x : c_ptr(real), y : c_ptr(real), a : int, b : int, ptr : c_ptr(real), c : int, d : int, ptr2 : c_ptr(int));
   extern proc gr_shadepoints(n : int, x : c_ptr(real), y : c_ptr(real), xform : int, w : int, h : int);
   extern proc gr_shadelines(n : int, x : c_ptr(real), y : c_ptr(real), xform : int, w : int, h : int);
@@ -425,6 +441,7 @@ use GRPlot;
 // writeln(inqlinewidth());
 // setscale(10.0);
 // writeln(inqscale());
+writeln(version());
 while true{
   nothing;
 }
