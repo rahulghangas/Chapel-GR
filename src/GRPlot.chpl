@@ -243,6 +243,10 @@ module GRPlot {
   }
 
   extern proc gr_polyline3d(n : int, px : c_ptr(real), py : c_ptr(real), pz : c_ptr(real));
+  proc polyline3d(px : [] ?t1, py : [] ?t2, pz : [] ?t3) {
+    gr_polyline3d(px.size, px, py, pz);
+  }
+
   extern proc gr_polymarker3d(n : int, px : c_ptr(real), py : c_ptr(real), pz : c_ptr(real));
   extern proc gr_axes3d(x_tick : real, y_tick : real, z_tick : real, 
                         x_org : real, y_org : real, z_org : real, 
