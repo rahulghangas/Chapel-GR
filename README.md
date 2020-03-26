@@ -4,5 +4,5 @@ GR provides fast visualisation/plotting tools for 2D/3d visualisation. It is bas
 
 # Example
 To compile example:
-1. ```export GRDIR=$GRPlot root$/third-party/gr```
+1. ```export GRDIR=$GRPlot_dir_root$/third-party/gr```
 2. compile myPackageExample in example using ```chpl chpl myPackageExample.chpl -I${GRDIR}/include -L${GRDIR}/lib --ldflags "-rpath ${GRDIR}/lib" -lGR ```
