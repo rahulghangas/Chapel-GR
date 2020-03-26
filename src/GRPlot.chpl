@@ -1,7 +1,7 @@
 /* Documentation for GR */
 module GRPlot {
   use SysCTypes;
-  require "../third-party/gr/include/gr.h";
+  require "gr.h";
 
 
   extern "gr_initgr" proc initgr();
