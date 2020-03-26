@@ -1,7 +1,7 @@
 /* Documentation for GR */
 module GRPlot {
   use SysCTypes;
-  require "gr.h";
+  require "../third-party/gr/include/gr.h";
 
 
   extern "gr_initgr" proc initgr();
@@ -39,7 +39,6 @@ module GRPlot {
   extern proc gr_polyline(n : int, x : [] real, y : [] real);
   proc polyline(x : [?D] real, y : [D] real) {
     gr_polyline(x.size, x, y);
-    // gr_axes(gr_tick(0, 1), gr_tick(0, 1), 0, 0, 1, 1, -0.01);
   }
   
   extern proc gr_polymarker(n : int, x : [] real, y : [] real);
@@ -98,13 +97,15 @@ module GRPlot {
     gr_spline(x.size, x, y, m, method);
   }
 
-  extern proc gr_gridit(nd : int, xd : c_ptr(real), yd : c_ptr(real), zd : c_ptr(real),
-                        nx : int, ny : int, x : c_ptr(real), y : c_ptr(real), z : c_ptr(real));
+  extern proc gr_gridit(nd : int, xd : [] real, yd : [] real, zd : [] real,
+                        nx : int, ny : int, x : [] real, y : [] real, z : [] real);
   proc gridit(xd : [] real, yd : [] real, zd : [] real, nx : int, ny : int) {
     var x : [1..nx] real = {1..nx};
     var y : [1..ny] real = {1..ny};
     var z : [1..nx*ny] real = {1..nx*ny};
     gr_gridit(xd.size, xd, yd, zd, nx, ny, x, y, z);
+
+    return (x, y, z);
   }
 
   extern "gr_setlinetype" proc setlinetype(style : int);
@@ -209,7 +210,7 @@ module GRPlot {
     return (xmin, xmax, ymin, ymax);
   }
 
-  extern "gr_setviewport" proc gr_setviewport(xmin : real, xmax : real, ymin : real, ymax : real);
+  extern "gr_setviewport" proc setviewport(xmin : real, xmax : real, ymin : real, ymax : real);
 
   extern proc gr_inqviewport(ref xmin : real, ref xmax : real, 
                              ref ymin : real, ref ymax : real);
@@ -276,9 +277,9 @@ module GRPlot {
   extern "gr_axes" proc axes(x_tick : real, y_tick : real, x_org : real, y_org : real, 
                       major_x : int, major_y : int, tick_size : real);
 
+  // TODO
   extern proc gr_axeslbl(x_tick : real, y_tick : real, x_org : real, y_org : real, major_x : int, 
                         major_y : int, tick_size : real, fpx : c_fn_ptr, fpy : c_fn_ptr);
-  // TODO
 
   extern "gr_grid" proc grid(x_tick : real, y_tick : real, x_org : real, y_org : real, major_x : int, 
                       major_y : int);
@@ -562,6 +563,7 @@ module GRPlot {
   extern proc gr_version() : c_string;
   proc version() return gr_version() : string;
 
+  // TODO : Below
   extern proc gr_shade(n : int, x : c_ptr(real), y : c_ptr(real), a : int, b : int, ptr : c_ptr(real), c : int, d : int, ptr2 : c_ptr(int));
   extern proc gr_shadepoints(n : int, x : c_ptr(real), y : c_ptr(real), xform : int, w : int, h : int);
   extern proc gr_shadelines(n : int, x : c_ptr(real), y : c_ptr(real), xform : int, w : int, h : int);
@@ -570,14 +572,19 @@ module GRPlot {
   // TODO : Define findboundary
   // extern proc gr_findboundary
 
-  extern proc gr_setresamplemethod(method : c_uint);
-  extern proc gr_inqresamplemethod(flag : c_ptr(c_uint));
+  extern "gr_setresamplemethod" proc setresamplemethod(method : int);
+
+  extern proc gr_inqresamplemethod(ref flag : int);
+  proc inqresamplemethod() {
+    var flag : int;
+    gr_inqresamplemethod(flag);
+    return flag;
+  }
+
   extern proc gr_path(n : int, x : [] real, y : [] real, codes : c_string);
   proc path(x : [?D] real, y : [D] real, codes : string) {
     gr_path(x.size, x, y, codes.c_str());
   }
-  // TODO
-  // Line 936 GR.jl
 
   extern "gr_setborderwidth" proc setborderwidth(width : real);
 
@@ -596,19 +603,4 @@ module GRPlot {
     gr_inqbordercolorind(color);
     return color;
   }
-
-}
-
-use GRPlot;
-// var a : [1..10] real = [0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0];
-// var b : [1..10] real = [1.0,0.9,0.8,0.7,0.6,0.5,0.4,0.3,0.2,0.1];
-// polyline(a, b);
-// writeln(inqlinewidth());
-// setscale(10.0);
-// writeln(inqscale());
-writeln(version());
-// setcolormapfromrgb([0.1, 0.2], [0.1, 0.2], [0.1, 0.2], nil);
-setcoordxform([1 ,2 ,3, 4, 5, 6]);
-while true{
-  nothing;
 }
