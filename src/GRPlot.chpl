@@ -514,10 +514,33 @@ module GRPlot {
   extern proc gr_uselinespec(linespec : c_string) : int;
   proc uselinespec(linespec : string) return gr_uselinespec(linespec.c_str());
 
+  // TODO
   extern proc gr_delaunay(n : int, const x : real, const y : real, ntri : c_ptr(int), traingles : c_ptr(c_ptr(int)));
-  extern proc gr_reducepoints(n : int, const x : real, const y : real, points : int, x_array : c_ptr(real), y_array : c_ptr(real));
-  extern proc gr_trisurface(n : int, px : c_ptr(real), py : c_ptr(real), pz : c_ptr(real));
-  extern proc gr_gradient(nx : int, ny : int, x : c_ptr(real), y : c_ptr(real), z : c_ptr(real), u : c_ptr(real), v : c_ptr(real));
+
+  extern proc gr_reducepoints(n : int, const ref x : [] real, const ref y : [] real, points : int, x_array : [] real, y_array : [] real);
+  proc reducepoints(xd : [?D] real, yd : [D] real, nPoints) {
+    var x, y : [1..nPoints] real;
+    gr_reducepoints(x.size, x, y, nPoints, x, y);
+    return (x, y);
+  }
+
+  extern proc gr_trisurface(n : int, px : [] real, py : [] real, pz : [] real);
+  proc trisurface(x : [] real, y : [] real, z : [] real) {
+    var nPoints = min(x.size, y.size, z.size);
+    trisurface(nPoints, x, y, z);
+  }
+
+  extern proc gr_gradient(nx : int, ny : int, x : [] real, y : [] real, z : [] real, u : [] real, v : [] real);
+  proc gradients(x : [] real, y : [] real, z : [] real) {
+    var nx : int = x.size;
+    var ny : int = y.size;
+    if z.size != nx * ny then halt("z has incorrect dimesnions");
+
+    var u, v : [1..nx*ny] real;
+    gr_gradient(nx, ny, y, y, z, u, v);
+    return (u, v);
+  }
+
   extern proc gr_quiver(nx : int, ny : int, x : c_ptr(real), y : c_ptr(real), u : c_ptr(real), v : c_ptr(real), color : int);
   extern proc gr_interp2(nx : int, ny : int, 
                          const x : c_ptr(real), const y : c_ptr(real), const z : c_ptr(real), 
@@ -567,7 +590,7 @@ module GRPlot {
   extern proc gr_shade(n : int, x : [] real, y : [] real, a : int, b : int, ptr : c_ptr(real), c : int, d : int, ptr2 : c_ptr(int));
 
   extern proc gr_shadepoints(n : int, x : [] real, y : [] real, xform : int, w : int, h : int);
-  proc shadepoints(x : [?D] ?t, y : [D] t, dims = (1200,1200), xform = 1) {
+  proc shadepoints(x : [?D] real, y : [D] real, dims = (1200,1200), xform = 1) {
     var (w, h) : int = dims;
     shadepoints(x.size, x, y, xform, w, h);
   }
