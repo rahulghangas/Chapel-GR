@@ -564,10 +564,26 @@ module GRPlot {
   proc version() return gr_version() : string;
 
   // TODO : Below
-  extern proc gr_shade(n : int, x : c_ptr(real), y : c_ptr(real), a : int, b : int, ptr : c_ptr(real), c : int, d : int, ptr2 : c_ptr(int));
-  extern proc gr_shadepoints(n : int, x : c_ptr(real), y : c_ptr(real), xform : int, w : int, h : int);
-  extern proc gr_shadelines(n : int, x : c_ptr(real), y : c_ptr(real), xform : int, w : int, h : int);
-  extern proc gr_panzoom(x : real, y : real, xzoom : real, yzoom : real, xmin : c_ptr(real), xmax : c_ptr(real), ymin : c_ptr(real), ymax : c_ptr(real));
+  extern proc gr_shade(n : int, x : [] real, y : [] real, a : int, b : int, ptr : c_ptr(real), c : int, d : int, ptr2 : c_ptr(int));
+
+  extern proc gr_shadepoints(n : int, x : [] real, y : [] real, xform : int, w : int, h : int);
+  proc shadepoints(x : [?D] ?t, y : [D] t, dims = (1200,1200), xform = 1) {
+    var (w, h) : int = dims;
+    shadepoints(x.size, x, y, xform, w, h);
+  }
+
+  extern proc gr_shadelines(n : int, x : [] real, y : [] real, xform : int, w : int, h : int);
+  proc shadelines(x : [?D] ?t, y : [D] t, dims = (1200,1200), xform = 1) {
+    var (w, h) : int = dims;
+    shadepoints(x.size, x, y, xform, w, h);
+  }
+
+  extern proc gr_panzoom(x : real, y : real, xzoom : real, yzoom : real, ref xmin : real, ref xmax : real, ref ymin : real, ref ymax : real);
+  proc panzoom(x : real, y : real, zoom : real) {
+    var xmin, xmax, ymin, ymax : real;
+    gr_panzoom(x, y, zoom, zoom, xmin, xmax, ymin, ymax);
+    return (xmin, xmax, ymin, ymax);
+  }
   
   // TODO : Define findboundary
   // extern proc gr_findboundary
