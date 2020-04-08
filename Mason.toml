@@ -4,3 +4,9 @@ version = "0.1.0"
 chplVersion = "1.20.0"
 
 [dependencies]
+
+[examples]
+examples = ["myPackageExample.chpl"]
+
+[examples.myPackageExample] 
+compopts = "-lGR -I${GRDIR}/include -L${GRDIR}/lib --ldflags -Wl,-rpath,${GRDIR}/lib"

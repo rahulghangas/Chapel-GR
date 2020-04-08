@@ -573,7 +573,7 @@ module GRPlot {
   extern proc gr_switchmeta(id : c_uint);
   extern proc gr_registermeta(meta_event_type : c_void_ptr, meta_event_callback : c_void_ptr) : int;
   extern proc gr_unregistermeta(meta_event_type : c_void_ptr) : int;
-  extern proc gr_meta_max_plotid() : c_uint;
+  extern "gr_meta_max_plotid" proc meta_max_plotid() : int;
 
   // TODO : dumpmeta and dumpmeta_json
 
