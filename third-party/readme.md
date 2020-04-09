@@ -1,1 +1,1 @@
-This folder shuld cotain prebuilt binaries as a subfolder
+This folder shuld cotain prebuilt binaries as a subfolder named gr
