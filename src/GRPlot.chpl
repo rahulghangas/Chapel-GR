@@ -1,7 +1,7 @@
 /* Documentation for GR */
 module GRPlot {
   use SysCTypes;
-  require "gr.h";
+  require "../third-party/gr/include/gr.h";
 
 
   extern "gr_initgr" proc initgr();
@@ -92,8 +92,8 @@ module GRPlot {
     gr_gdp(x.size, x, y, primid, datarec.size, datarec);
   }
 
-  extern proc gr_spline(n : int, px : c_ptr(real), py : c_ptr(real), m : int, method : int);
-  proc spline(x : [] real, y : real, m : int, method : int) {
+  extern proc gr_spline(n : int, px : [] real, py : [] real, m : int, method : int);
+  proc spline(x : [] real, y : [] real, m : int, method : int) {
     gr_spline(x.size, x, y, m, method);
   }
 
@@ -267,7 +267,7 @@ module GRPlot {
     return gr_textext(x : real, y : real, str.c_str());
   }
 
-  extern proc gr_inqtextext(x : real, y : real, str : c_string, tbx : c_ptr(real), tby : c_ptr(real));
+  extern proc gr_inqtextext(x : real, y : real, str : c_string, tbx : [] real, tby : [] real);
   proc inqtextext(x: integral, y : integral, str : string) {
     var tbx, tby : [1..4] real;
     gr_inqtextext(x, y, str.c_str(), tbx, tby);
@@ -288,24 +288,24 @@ module GRPlot {
                         x_org : real, y_org : real, z_org : real, 
                         major_x : int, major_y : int, major_z : int);
 
-  extern proc gr_verrorbars(n : int, px : c_ptr(real), py : c_ptr(real), 
-                            e1 : c_ptr(real), e2 : c_ptr(real));
+  extern proc gr_verrorbars(n : int, px : [] real, py : [] real, 
+                            e1 : [] real, e2 : [] real);
   proc verrorbars(px : [?D] real, py : [D] real, e1 : [D] real, e2 : [D] real) {
     gr_verrorbars(px.size, px, py, e1, e2);
   }
 
-  extern proc gr_herrorbars(n : int, px : c_ptr(real), py : c_ptr(real), 
-                            e1 : c_ptr(real), e2 : c_ptr(real));
+  extern proc gr_herrorbars(n : int, px : [] real, py : [] real, 
+                            e1 : [] real, e2 : [] real);
   proc herrorbars(px : [?D] real, py : [D] real, e1 : [D] real, e2 : [D] real) {
     gr_herrorbars(px.size, px, py, e1, e2);
   }
 
-  extern proc gr_polyline3d(n : int, px : c_ptr(real), py : c_ptr(real), pz : c_ptr(real));
+  extern proc gr_polyline3d(n : int, px : [] real, py : [] real, pz : [] real);
   proc polyline3d(px : [?D] real, py : [D] real, pz : [D] real) {
     gr_polyline3d(px.size, px, py, pz);
   }
 
-  extern proc gr_polymarker3d(n : int, px : c_ptr(real), py : c_ptr(real), pz : c_ptr(real));
+  extern proc gr_polymarker3d(n : int, px : [] real, py : [] real, pz : [] real);
   proc polymarker3d(px : [?D] real, py : [D] real, pz : [D] real) {
     gr_polymarker3d(px.size, px, py, pz);
   }
